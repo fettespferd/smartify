@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Vermögensrechner</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #f43f5e;
+            --background-color: #f8fafc;
+            --text-color: #1e293b;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        .container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: var(--background-color);
+            border-radius: var(--border-radius);
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .value-display {
+            font-weight: normal;
+            color: var(--primary-color);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .summary-card {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+        }
+
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 0.5rem 0;
+        }
+
+        .summary-label {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            background: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        button.secondary {
+            background: #e2e8f0;
+            color: var(--text-color);
+        }
+
+        #wealthChart {
+            margin: 2rem 0;
+            border-radius: var(--border-radius);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            width: 100%;
+        }
+
+        [data-tooltip] {
+            position: relative;
+            cursor: help;
+        }
+
+        [data-tooltip]:before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.5rem 1rem;
+            background: var(--text-color);
+            color: white;
+            border-radius: var(--border-radius);
+            font-size: 0.875rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            transition-delay: 1s; 
+        }
+
+        [data-tooltip]:not(:hover):before {
+            transition-delay: 0s; /* Sofortiges Ausblenden */
+        }
+
+        [data-tooltip]:hover:before {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .info-boxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+
+        .info-box:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .rule-4 { border-left-color: #6F8A63; }
+        .rule-50-30-20 { border-left-color: #3D6BC7; }
+        .rule-115 { border-left-color: #9333ea; }
+        .coast-fire { border-left-color: #f59e0b; }
+
+        #currentRate, #doublingYears {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .allocation-bars {
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .allocation-bar {
+            margin-bottom: 0.5rem;
+        }
+
+        .bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .milestones {
+            margin: 2rem 0;
+            padding: 2rem;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .milestone-title {
+            color: var(--primary-color);
+            margin: 0 0 2rem 0;
+            font-size: 1.25rem;
+        }
+
+        .milestone-container {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .milestone-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+
+        .milestone-items {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            z-index: 2;
+        }
+
+        .milestone-item {
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .milestone-dot {
+            width: 16px;
+            height: 16px;
+            background: #e2e8f0;
+            border: 3px solid white;
+            border-radius: 50%;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .milestone-amount {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .milestone-label {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .milestone-item.reached .milestone-dot {
+            background: var(--primary-color);
+            transform: scale(1.2);
+        }
+
+        .milestone-item.reached .milestone-amount {
+            color: var(--primary-color);
+        }
+
+        .rules-container {
+            margin-top: 2rem;
+        }
+
+        .info-boxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+
+        .info-box:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .rule-72 { border-left-color: #3D6BC7; }
+        .rule-115 { border-left-color: #6F8A63; }
+        .asset-allocation { border-left-color: #9333ea; }
+
+        .info-box h3 {
+            margin: 0 0 1rem 0;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .info-box p {
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .allocation-bars {
+            margin-top: 1rem;
+        }
+
+        .allocation-bar {
+            margin-bottom: 0.75rem;
+        }
+
+        .bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Intelligenter Vermögensrechner</h1>
+        
+        <div class="summary">
+            <div class="summary-card">
+                <div class="summary-value" id="totalInvestment">0 €</div>
+                <div class="summary-label">Gesamte Einzahlungen</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value" id="totalGains">0 €</div>
+                <div class="summary-label">Zinsgewinne</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value" id="finalWealth">0 €</div>
+                <div class="summary-label">Endvermögen</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value" id="returnRate">0 %</div>
+                <div class="summary-label">Gesamtrendite</div>
+            </div>
+        </div>
+
+        <div id="targetYear" style="text-align: center; margin: 1rem 0; color: var(--primary-color); font-weight: 500;"></div>
+
+        <canvas id="wealthChart"></canvas>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="currentAge">
+                    Aktuelles Alter
+                    <span class="value-display">30 Jahre</span>
+                </label>
+                <input type="range" id="currentAge" min="18" max="80" step="1" value="30">
+            </div>
+            <div class="control-group">
+                <label for="initialInvestment">
+                    Startvermögen
+                    <span class="value-display">0 €</span>
+                </label>
+                <input type="range" id="initialInvestment" min="0" max="100000" step="1000" value="0">
+            </div>
+            <div class="control-group">
+                <label for="monthlyInvestment">
+                    Monatliche Einzahlung
+                    <span class="value-display">500 €</span>
+                </label>
+                <input type="range" id="monthlyInvestment" min="0" max="5000" step="100" value="500">
+            </div>
+            <div class="control-group">
+                <label for="interestRate">
+                    Jährlicher Zinssatz
+                    <span class="value-display">6.0 %</span>
+                </label>
+                <input type="range" id="interestRate" min="0" max="15" step="0.1" value="6">
+            </div>
+            <div class="control-group">
+                <label for="investmentPeriod">
+                    Einzahlungszeitraum
+                    <span class="value-display">11 Jahre</span>
+                </label>
+                <input type="range" id="investmentPeriod" min="1" max="50" step="1" value="11">
+            </div>
+            <div class="control-group">
+                <label for="totalPeriod">
+                    Gesamtlaufzeit
+                    <span class="value-display">40 Jahre</span>
+                </label>
+                <input type="range" id="totalPeriod" min="1" max="50" step="1" value="40">
+            </div>
+            <div class="control-group">
+                <label for="targetAmount">
+                    Zielvermögen
+                    <span class="value-display">100.000 €</span>
+                </label>
+                <input type="range" id="targetAmount" min="0" max="1000000" step="10000" value="100000">
+            </div>
+            <div class="control-group">
+                <label for="retirementAge">
+                    Gewünschtes Rentenalter
+                    <span class="value-display">65 Jahre</span>
+                </label>
+                <input type="range" id="retirementAge" min="30" max="80" step="1" value="65">
+            </div>
+            <div class="control-group">
+                <label for="monthlyRetirementIncome">
+                    Gewünschtes monatliches Renteneinkommen
+                    <span class="value-display">2.000 €</span>
+                </label>
+                <input type="range" id="monthlyRetirementIncome" min="500" max="10000" step="100" value="2000">
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button onclick="resetInputs()">Zurücksetzen</button>
+        </div>
+
+        <div class="rules-container">
+            <div class="info-boxes">
+                <div class="info-box rule-72">
+                    <div class="info-content">
+                        <h3>72er-Regel</h3>
+                        <p>Bei <span id="currentRate">6.0</span>% Rendite verdoppelt sich Ihr Vermögen etwa alle <span id="doublingYears">12</span> Jahre.</p>
+                    </div>
+                </div>
+                
+                <div class="info-box rule-115">
+                    <div class="info-content">
+                        <h3>115-Regel</h3>
+                        <p>Empfohlener Aktienanteil: <span id="stockPercentage">65</span>% (115 - Ihr Alter: <span id="currentAgeDisplay">50</span>)</p>
+                    </div>
+                </div>
+
+                <div class="info-box asset-allocation">
+                    <h3>Empfohlene Vermögensverteilung</h3>
+                    <div class="allocation-bars">
+                        <div class="allocation-bar">
+                            <div class="bar-label">Aktien: <span id="stocksAllocation">70</span>%</div>
+                            <div class="progress-bar">
+                                <div class="progress" id="stocksBar" style="width: 70%; background: #3D6BC7;"></div>
+                            </div>
+                        </div>
+                        <div class="allocation-bar">
+                            <div class="bar-label">Anleihen: <span id="bondsAllocation">20</span>%</div>
+                            <div class="progress-bar">
+                                <div class="progress" id="bondsBar" style="width: 20%; background: #6F8A63;"></div>
+                            </div>
+                        </div>
+                        <div class="allocation-bar">
+                            <div class="bar-label">Liquidität: <span id="cashAllocation">10</span>%</div>
+                            <div class="progress-bar">
+                                <div class="progress" id="cashBar" style="width: 10%; background: #9333ea;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    <script>
+        let chart;
+        let isFireMode = false;
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('de-DE', {
+                style: 'currency',
+                currency: 'EUR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(value);
+        }
+
+        function toggleCalculationMode() {
+            isFireMode = !isFireMode;
+            const button = document.getElementById('modeToggle');
+            const targetControls = document.getElementById('targetAmount').parentElement;
+            const retirementControls = document.querySelectorAll('#retirementAge, #monthlyRetirementIncome');
+            
+            if (isFireMode) {
+                button.textContent = 'Zu Zielvermögen wechseln';
+                targetControls.style.display = 'none';
+                retirementControls.forEach(control => control.parentElement.style.display = 'flex');
+            } else {
+                button.textContent = 'Zu FIRE-Rechner wechseln';
+                targetControls.style.display = 'flex';
+                retirementControls.forEach(control => control.parentElement.style.display = 'none');
+            }
+            updateChart();
+        }
+
+        function calculateRequiredRetirementCapital(monthlyIncome, interestRate) {
+            // Verwendung der 4%-Regel als Basis, angepasst an den tatsächlichen Zinssatz
+            const safeWithdrawalRate = interestRate / 100 / 1.5; // Conservative estimate
+            const yearlyIncome = monthlyIncome * 12;
+            return yearlyIncome / safeWithdrawalRate;
+        }
+
+        function calculateWealth(monthlyInvestment, interestRate, investmentPeriod, totalPeriod, initialInvestment) {
+            const yearlyInvestment = monthlyInvestment * 12;
+            const currentAge = parseInt(document.getElementById('currentAge').value);
+            const retirementAge = parseInt(document.getElementById('retirementAge').value);
+            const results = {
+                years: [],
+                investments: [],
+                gains: [],
+                continuedSavings: [],
+                totalInvestment: initialInvestment,
+                totalGains: 0,
+                finalWealth: 0,
+                targetYear: null
+            };
+
+            let totalInvestment = initialInvestment;
+            let totalWealth = initialInvestment;
+            let continuedSavingsTotal = initialInvestment;
+
+            for (let year = 1; year <= totalPeriod; year++) {
+                const currentYearAge = currentAge + year;
+                const isRetired = isFireMode && currentYearAge >= retirementAge;
+
+                if (!isRetired && year <= investmentPeriod) {
+                    totalInvestment += yearlyInvestment;
+                }
+
+                totalWealth = (totalWealth + (year <= investmentPeriod ? yearlyInvestment : 0)) 
+                    * (1 + interestRate / 100);
+
+                continuedSavingsTotal += yearlyInvestment;
+
+                results.years.push(year);
+                results.investments.push(totalInvestment);
+                results.gains.push(Math.max(0, totalWealth - totalInvestment));
+                results.continuedSavings.push(continuedSavingsTotal);
+            }
+
+            results.totalInvestment = totalInvestment;
+            results.totalGains = totalWealth - totalInvestment;
+            results.finalWealth = totalWealth;
+            results.returnRate = ((totalWealth / totalInvestment - 1) * 100);
+
+            return results;
+        }
+
+        function updateChart() {
+            const currentAge = parseInt(document.getElementById('currentAge').value);
+            const initialInvestment = parseFloat(document.getElementById('initialInvestment').value);
+            const monthlyInvestment = parseFloat(document.getElementById('monthlyInvestment').value);
+            const interestRate = parseFloat(document.getElementById('interestRate').value);
+            const investmentPeriod = parseInt(document.getElementById('investmentPeriod').value);
+            const totalPeriod = parseInt(document.getElementById('totalPeriod').value);
+            const targetAmount = parseFloat(document.getElementById('targetAmount').value);
+
+            // Update display values
+            document.querySelector('#currentAge').parentElement.querySelector('.value-display').textContent = 
+                `${currentAge} Jahre`;
+            document.querySelector('#initialInvestment').parentElement.querySelector('.value-display').textContent = 
+                formatCurrency(initialInvestment);
+            document.querySelector('#monthlyInvestment').parentElement.querySelector('.value-display').textContent = 
+                formatCurrency(monthlyInvestment);
+            document.querySelector('#interestRate').parentElement.querySelector('.value-display').textContent = 
+                `${interestRate.toFixed(1)} %`;
+            document.querySelector('#investmentPeriod').parentElement.querySelector('.value-display').textContent = 
+                `${investmentPeriod} Jahre`;
+            document.querySelector('#totalPeriod').parentElement.querySelector('.value-display').textContent = 
+                `${totalPeriod} Jahre`;
+            document.querySelector('#targetAmount').parentElement.querySelector('.value-display').textContent = 
+                formatCurrency(targetAmount);
+
+            // Update 72er-Regel
+            document.getElementById('currentRate').textContent = interestRate.toFixed(1);
+            document.getElementById('doublingYears').textContent = Math.round(72 / interestRate);
+
+            const data = calculateWealth(monthlyInvestment, interestRate, investmentPeriod, totalPeriod, initialInvestment);
+
+            // Update summary values
+            document.getElementById('totalInvestment').textContent = formatCurrency(data.totalInvestment);
+            document.getElementById('totalGains').textContent = formatCurrency(data.totalGains);
+            document.getElementById('finalWealth').textContent = formatCurrency(data.finalWealth);
+            document.getElementById('returnRate').textContent = `${data.returnRate.toFixed(1)} %`;
+
+            // Update Meilensteine
+            updateMilestones(data.finalWealth);
+
+            // Update Asset Allocation
+            updateAssetAllocation(currentAge);
+
+            if (chart) {
+                chart.destroy();
+            }
+
+            const ctx = document.getElementById('wealthChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.years,
+                    datasets: [{
+                        label: 'Weitersparen ohne Ruhestand',
+                        data: data.continuedSavings,
+                        backgroundColor: 'rgba(148, 163, 184, 0.7)',
+                        order: 3
+                    }, {
+                        label: 'Zinsgewinn',
+                        data: data.gains,
+                        backgroundColor: '#6F8A63',
+                        order: 2
+                    }, {
+                        label: 'Einzahlungen',
+                        data: data.investments,
+                        backgroundColor: '#3D6BC7',
+                        order: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 2,
+                    scales: {
+                        x: {
+                            stacked: true,
+                            grid: {
+                                display: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Jahre'
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Vermögen (€)'
+                            },
+                            ticks: {
+                                callback: value => formatCurrency(value)
+                            },
+                            beginAtZero: true,
+                            grace: "5%"
+                        }
+                    },
+                    animation: {
+                        duration: 0
+                    },
+                    plugins: {
+                        annotation: {
+                            annotations: {
+                                targetLine: {
+                                    type: 'line',
+                                    yMin: targetAmount,
+                                    yMax: targetAmount,
+                                    borderColor: 'rgb(244, 63, 94)',
+                                    borderWidth: 2,
+                                    borderDash: [5, 5],
+                                    label: {
+                                        enabled: true,
+                                        content: `Zielvermögen: ${formatCurrency(targetAmount)}`,
+                                        position: 'end'
+                                    }
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${formatCurrency(context.raw)}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Berechne und zeige die Zeit bis zum Zielvermögen
+            const yearsToTarget = data.years.findIndex(year => 
+                (data.investments[year] + data.gains[year]) >= targetAmount);
+            
+            if (yearsToTarget !== -1) {
+                document.getElementById('targetYear').textContent = 
+                    `Zielvermögen wird in ${yearsToTarget + 1} Jahren erreicht`;
+            } else {
+                document.getElementById('targetYear').textContent = 
+                    'Zielvermögen wird im betrachteten Zeitraum nicht erreicht';
+            }
+        }
+
+        function resetInputs() {
+            document.getElementById('initialInvestment').value = 0;
+            document.getElementById('monthlyInvestment').value = 500;
+            document.getElementById('interestRate').value = 6;
+            document.getElementById('investmentPeriod').value = 11;
+            document.getElementById('totalPeriod').value = 40;
+            document.getElementById('targetAmount').value = 100000;
+            document.getElementById('retirementAge').value = 65;
+            document.getElementById('monthlyRetirementIncome').value = 2000;
+            updateChart();
+        }
+
+        window.addEventListener('load', () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('monthly')) {
+                document.getElementById('monthlyInvestment').value = params.get('monthly');
+                document.getElementById('interestRate').value = params.get('rate');
+                document.getElementById('investmentPeriod').value = params.get('period');
+                document.getElementById('totalPeriod').value = params.get('total');
+            }
+            updateChart();
+        });
+
+        document.querySelectorAll('input[type="range"]').forEach(input => {
+            input.addEventListener('input', updateChart);
+        });
+
+        // Initial setup
+        document.querySelectorAll('#retirementAge, #monthlyRetirementIncome').forEach(control => 
+            control.parentElement.style.display = 'none'
+        );
+
+        function updateAssetAllocation(age) {
+            // Berechnung der Vermögensverteilung
+            const stocksPercentage = Math.max(0, Math.min(90, 115 - age));
+            const remainingPercentage = 100 - stocksPercentage;
+            const bondsPercentage = Math.floor(remainingPercentage * 0.7);
+            const cashPercentage = 100 - stocksPercentage - bondsPercentage;
+
+            // Update der Prozentanzeigen
+            document.getElementById('stocksAllocation').textContent = stocksPercentage;
+            document.getElementById('bondsAllocation').textContent = bondsPercentage;
+            document.getElementById('cashAllocation').textContent = cashPercentage;
+
+            // Update der Fortschrittsbalken
+            document.getElementById('stocksBar').style.width = `${stocksPercentage}%`;
+            document.getElementById('bondsBar').style.width = `${bondsPercentage}%`;
+            document.getElementById('cashBar').style.width = `${cashPercentage}%`;
+
+            // Update der 115-Regel Info
+            const ruleText = document.querySelector('.rule-115 p');
+            ruleText.textContent = `Empfohlener Aktienanteil: ${stocksPercentage}% (115 - Ihr Alter: ${age})`;
+        }
+
+        function updateMilestones(currentWealth) {
+            const milestones = [25000, 100000, 250000, 1000000];
+            const milestoneItems = document.querySelectorAll('.milestone-item');
+            
+            milestoneItems.forEach((item, index) => {
+                if (currentWealth >= milestones[index]) {
+                    item.classList.add('reached');
+                } else {
+                    item.classList.remove('reached');
+                }
+            });
+        }
+    </script>
+</body>
+</html> 
