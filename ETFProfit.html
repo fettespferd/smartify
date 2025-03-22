@@ -540,6 +540,247 @@
             font-size: 0.875rem;
             color: #64748b;
         }
+
+        /* CSS für verbesserte Info-Icons und Tooltips */
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            background: #e2e8f0;
+            color: var(--primary-color);
+            border-radius: 50%;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 5px;
+            cursor: help;
+            transition: all 0.2s;
+        }
+        
+        .info-icon:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .tooltip {
+            position: relative;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: var(--text-color);
+            color: white;
+            text-align: left;
+            border-radius: var(--border-radius);
+            padding: 10px;
+            position: absolute;
+            z-index: 100;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-weight: normal;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            box-shadow: var(--shadow);
+        }
+        
+        .tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--text-color) transparent transparent transparent;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .insights-container {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow);
+        }
+        
+        .insights-container h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .insight-item {
+            display: flex;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .insight-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .insight-icon {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .insight-icon.positive { background-color: #10b981; }
+        .insight-icon.neutral { background-color: #3b82f6; }
+        .insight-icon.warning { background-color: #f59e0b; }
+        
+        .insight-content {
+            flex-grow: 1;
+        }
+        
+        .insight-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .insight-description {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        /* Responsive Anpassungen */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .summary {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .summary-card {
+                padding: 1rem;
+            }
+            
+            .summary-value {
+                font-size: 1.2rem;
+            }
+            
+            .controls {
+                padding: 1rem;
+                gap: 1rem;
+            }
+            
+            #wealthChart {
+                margin: 1.5rem 0;
+                padding: 1rem;
+            }
+            
+            .toggle-container {
+                flex-direction: column;
+                border-radius: 0;
+                overflow: visible;
+                box-shadow: none;
+            }
+            
+            .toggle-button {
+                border-radius: var(--border-radius);
+                margin-bottom: 0.5rem;
+                box-shadow: var(--shadow);
+            }
+            
+            .info-boxes {
+                grid-template-columns: 1fr;
+            }
+            
+            .tax-comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-panel {
+                padding: 1rem;
+            }
+            
+            .scenario-controls {
+                grid-template-columns: 1fr;
+            }
+            
+            /* Anpassung des Chart-Aspektverhältnisses für mobile Geräte */
+            #wealthChart {
+                aspect-ratio: 1.2;
+            }
+        }
+        
+        /* Extra kleine Bildschirme */
+        @media (max-width: 480px) {
+            .summary {
+                grid-template-columns: 1fr;
+            }
+            
+            .control-group label {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .value-display {
+                margin-top: 0.25rem;
+            }
+            
+            .insight-item {
+                flex-direction: column;
+            }
+            
+            .insight-icon {
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        /* Neue Stile für verbesserte Szenario-Controls */
+        .rate-info {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 0.3rem;
+        }
+        
+        .scenario-controls .control-group {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+        }
+        
+        /* Unterschiedliche Farben für die Szenarien */
+        .scenario-controls .control-group:first-child {
+            border-left: 4px solid #f43f5e;
+        }
+        
+        .scenario-controls .control-group:last-child {
+            border-left: 4px solid #16a34a;
+        }
     </style>
 </head>
 <body>
@@ -594,6 +835,10 @@
             <div class="control-group">
                 <label for="interestRate">
                     Jährlicher Zinssatz
+                    <span class="tooltip">
+                        <span class="info-icon">i</span>
+                        <span class="tooltip-text">Der durchschnittliche jährliche Ertrag Ihrer Anlage. Historisch liegt die langfristige Rendite von globalen Aktien-ETFs bei ca. 7-8% vor Inflation. Anleihen liegen typischerweise bei 2-4%.</span>
+                    </span>
                     <span class="value-display">6.0 %</span>
                 </label>
                 <input type="range" id="interestRate" min="0" max="15" step="0.1" value="6">
@@ -641,23 +886,30 @@
             <button id="taxToggle" class="toggle-button">Steueroptimierung</button>
         </div>
 
-        <!-- Szenario-Vergleich Panel -->
+        <!-- Verbesserte Szenario-Vergleich Panel -->
         <div id="scenarioPanel" class="feature-panel">
-            <h3>Rendite-Szenarien</h3>
+            <h3>Rendite-Szenarien 
+                <span class="tooltip">
+                    <span class="info-icon">i</span>
+                    <span class="tooltip-text">Hier können Sie verschiedene Rendite-Szenarien vergleichen. Der Basisszenario entspricht Ihrem gewählten Zinssatz, während die pessimistischen und optimistischen Szenarien abweichende Renditen darstellen.</span>
+                </span>
+            </h3>
             <div class="scenario-controls">
                 <div class="control-group">
                     <label for="pessimisticRate">
-                        Pessimistisches Szenario (-<span id="pessimisticDiff">2.0</span>%)
+                        Pessimistisches Szenario 
                         <span class="value-display"><span id="pessimisticRateValue">4.0</span> %</span>
                     </label>
                     <input type="range" id="pessimisticRate" min="0" max="5" step="0.1" value="2">
+                    <div class="rate-info">Basis-Zinssatz minus <span id="pessimisticDiff">2.0</span>%</div>
                 </div>
                 <div class="control-group">
                     <label for="optimisticRate">
-                        Optimistisches Szenario (+<span id="optimisticDiff">2.0</span>%)
+                        Optimistisches Szenario
                         <span class="value-display"><span id="optimisticRateValue">8.0</span> %</span>
                     </label>
                     <input type="range" id="optimisticRate" min="0" max="5" step="0.1" value="2">
+                    <div class="rate-info">Basis-Zinssatz plus <span id="optimisticDiff">2.0</span>%</div>
                 </div>
             </div>
         </div>
@@ -683,7 +935,12 @@
 
         <!-- Steueroptimierung Panel -->
         <div id="taxPanel" class="feature-panel">
-            <h3>Steueroptimierung</h3>
+            <h3>Steueroptimierung
+                <span class="tooltip">
+                    <span class="info-icon">i</span>
+                    <span class="tooltip-text">In Deutschland werden Kapitalerträge mit der Abgeltungssteuer (25% plus Solidaritätszuschlag) besteuert. Bei thesaurierenden ETFs fällt die Steuer erst beim Verkauf an, während ausschüttende ETFs jährlich steuerpflichtige Dividenden generieren.</span>
+                </span>
+            </h3>
             <div class="control-group">
                 <label for="taxRate">
                     Abgeltungssteuer (inkl. Soli)
@@ -726,7 +983,12 @@
                 
                 <div class="info-box rule-115">
                     <div class="info-content">
-                        <h3>115-Regel</h3>
+                        <h3>115-Regel
+                            <span class="tooltip">
+                                <span class="info-icon">i</span>
+                                <span class="tooltip-text">Diese Faustformel besagt, dass der prozentuale Anteil an Aktien in Ihrem Portfolio 115 minus Ihr Alter betragen sollte. Je jünger Sie sind, desto mehr Risiko können Sie eingehen.</span>
+                            </span>
+                        </h3>
                         <p>Empfohlener Aktienanteil: <span id="stockPercentage">65</span>% (115 - Ihr Alter: <span id="currentAgeDisplay">50</span>)</p>
                     </div>
                 </div>
@@ -754,6 +1016,14 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Neuer Insights-Bereich (nach der Zusammenfassung) -->
+        <div class="insights-container">
+            <h3>Wichtige Erkenntnisse</h3>
+            <div class="insights-list" id="insightsList">
+                <!-- Wird dynamisch befüllt -->
             </div>
         </div>
     </div>
@@ -1327,6 +1597,17 @@
                     taxComparisonEl.remove();
                 }
             }
+
+            // Insights generieren
+            generateInsights(baseData, {
+                currentAge: currentAge,
+                targetAmount: targetAmount,
+                monthlyInvestment: monthlyInvestment,
+                interestRate: interestRate,
+                investmentPeriod: investmentPeriod,
+                totalPeriod: totalPeriod,
+                initialInvestment: initialInvestment
+            });
         }
 
         function resetInputs() {
@@ -1494,6 +1775,122 @@
                 });
             });
         }
+
+        // Funktion zur Generierung dynamischer Insights
+        function generateInsights(data, inputs) {
+            const insightsList = document.getElementById('insightsList');
+            insightsList.innerHTML = '';
+            
+            const insights = [];
+            const currentAge = inputs.currentAge;
+            const targetAmount = inputs.targetAmount;
+            const monthlyInvestment = inputs.monthlyInvestment;
+            const interestRate = inputs.interestRate;
+            
+            // Insight 1: Zeit bis zum Zielvermögen
+            const yearsToTarget = data.ages.findIndex((age, index) => 
+                (data.investments[index] + data.gains[index]) >= targetAmount) - data.ages.indexOf(currentAge);
+            
+            if (yearsToTarget > 0) {
+                const targetAge = currentAge + yearsToTarget;
+                insights.push({
+                    type: 'positive',
+                    icon: '✓',
+                    title: `Zielvermögen mit ${targetAge} Jahren erreicht`,
+                    description: `Bei Ihrer aktuellen Sparrate von ${formatCurrency(monthlyInvestment)}/Monat erreichen Sie Ihr Zielvermögen von ${formatCurrency(targetAmount)} in ${yearsToTarget} Jahren.`
+                });
+            } else {
+                insights.push({
+                    type: 'warning',
+                    icon: '!',
+                    title: 'Zielvermögen wird nicht erreicht',
+                    description: 'Mit Ihrer aktuellen Sparrate erreichen Sie Ihr Zielvermögen nicht im betrachteten Zeitraum. Erhöhen Sie Ihre monatliche Einzahlung oder den Anlagezeitraum.'
+                });
+            }
+            
+            // Insight 2: Zinseszins-Effekt
+            const totalInvestment = data.totalInvestment;
+            const finalWealth = data.finalWealth;
+            const zinseszinsAnteil = Math.round((finalWealth - totalInvestment) / finalWealth * 100);
+            
+            insights.push({
+                type: 'neutral',
+                icon: '💡',
+                title: 'Zinseszins-Effekt',
+                description: `Etwa ${zinseszinsAnteil}% Ihres Endvermögens (${formatCurrency(finalWealth - totalInvestment)}) werden durch Zinseszins generiert, nicht durch Einzahlungen.`
+            });
+            
+            // Insight 3: Optimierungspotenzial
+            const increasedMonthly = monthlyInvestment + 100;
+            const potentialGain = calculatePotentialGain(increasedMonthly, interestRate, inputs.investmentPeriod, inputs.totalPeriod, inputs.initialInvestment);
+            const additionalWealth = potentialGain - finalWealth;
+            
+            insights.push({
+                type: 'positive',
+                icon: '↑',
+                title: 'Optimierungspotenzial',
+                description: `Eine Erhöhung Ihrer monatlichen Einzahlung um nur 100€ würde Ihr Endvermögen um ${formatCurrency(additionalWealth)} steigern.`
+            });
+            
+            // Insight 4: Altersvorsorge
+            if (currentAge < 40) {
+                const retirementAmount = finalWealth;
+                const monthlyRetirementIncome = (retirementAmount * (interestRate / 100 / 12) * 0.7).toFixed(0);
+                
+                insights.push({
+                    type: 'neutral',
+                    icon: '🏖️',
+                    title: 'Ruhestandsperspektive',
+                    description: `Mit dem prognostizierten Endvermögen könnten Sie eine monatliche Entnahme von ca. ${formatCurrency(monthlyRetirementIncome)} erreichen, ohne das Kapital anzugreifen.`
+                });
+            }
+            
+            // Insights rendern
+            insights.forEach(insight => {
+                const insightElement = document.createElement('div');
+                insightElement.className = 'insight-item';
+                insightElement.innerHTML = `
+                    <div class="insight-icon ${insight.type}">${insight.icon}</div>
+                    <div class="insight-content">
+                        <div class="insight-title">${insight.title}</div>
+                        <div class="insight-description">${insight.description}</div>
+                    </div>
+                `;
+                insightsList.appendChild(insightElement);
+            });
+        }
+        
+        // Hilfsfunktion zur Berechnung des potenziellen Gewinns mit höherer Sparrate
+        function calculatePotentialGain(monthlyInvestment, interestRate, investmentPeriod, totalPeriod, initialInvestment) {
+            const yearlyInvestment = monthlyInvestment * 12;
+            let totalInvestment = initialInvestment;
+            let totalWealth = initialInvestment;
+            
+            for (let year = 0; year < totalPeriod; year++) {
+                if (year < investmentPeriod) {
+                    totalInvestment += yearlyInvestment;
+                }
+                
+                totalWealth = (totalWealth + (year < investmentPeriod ? yearlyInvestment : 0)) 
+                            * (1 + interestRate / 100);
+            }
+            
+            return totalWealth;
+        }
+
+        // Zusatz: Chart-Anpassung für mobile Ansicht
+        function updateChartResponsive() {
+            const isMobile = window.innerWidth <= 768;
+            
+            if (chart) {
+                chart.options.maintainAspectRatio = true;
+                chart.options.aspectRatio = isMobile ? 1.2 : 2;
+                chart.update();
+            }
+        }
+        
+        // Event-Listener für Bildschirmgrößenänderungen hinzufügen
+        window.addEventListener('resize', updateChartResponsive);
     </script>
 </body>
 </html> 
