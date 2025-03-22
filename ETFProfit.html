@@ -379,6 +379,167 @@
             height: 100%;
             transition: width 0.3s ease;
         }
+
+        /* Feature Panels und Toggle-Buttons */
+        .toggle-container {
+            display: flex;
+            margin: 1.5rem 0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .toggle-button {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: #f1f5f9;
+            border: none;
+            color: #64748b;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-button.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .feature-panel {
+            display: none;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .feature-panel.active {
+            display: block;
+        }
+
+        .feature-panel h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .toggle-label {
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        /* ETF-Typ Auswahl */
+        .etf-type-selector {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .etf-type-selector label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        /* Szenario-spezifische Stile */
+        .scenario-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Tax Comparison Card */
+        .tax-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .tax-card {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .tax-card-title {
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .tax-card-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .tax-card-label {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
     </style>
 </head>
 <body>
@@ -474,6 +635,82 @@
             </div>
         </div>
 
+        <div class="toggle-container">
+            <button id="scenarioToggle" class="toggle-button">Szenario-Vergleich</button>
+            <button id="inflationToggle" class="toggle-button">Inflationsrechner</button>
+            <button id="taxToggle" class="toggle-button">Steueroptimierung</button>
+        </div>
+
+        <!-- Szenario-Vergleich Panel -->
+        <div id="scenarioPanel" class="feature-panel">
+            <h3>Rendite-Szenarien</h3>
+            <div class="scenario-controls">
+                <div class="control-group">
+                    <label for="pessimisticRate">
+                        Pessimistisches Szenario (-<span id="pessimisticDiff">2.0</span>%)
+                        <span class="value-display"><span id="pessimisticRateValue">4.0</span> %</span>
+                    </label>
+                    <input type="range" id="pessimisticRate" min="0" max="5" step="0.1" value="2">
+                </div>
+                <div class="control-group">
+                    <label for="optimisticRate">
+                        Optimistisches Szenario (+<span id="optimisticDiff">2.0</span>%)
+                        <span class="value-display"><span id="optimisticRateValue">8.0</span> %</span>
+                    </label>
+                    <input type="range" id="optimisticRate" min="0" max="5" step="0.1" value="2">
+                </div>
+            </div>
+        </div>
+
+        <!-- Inflationsrechner Panel -->
+        <div id="inflationPanel" class="feature-panel">
+            <h3>Inflationsberücksichtigung</h3>
+            <div class="control-group">
+                <label for="inflationRate">
+                    Durchschnittliche Inflationsrate
+                    <span class="value-display"><span id="inflationRateValue">2.0</span> %</span>
+                </label>
+                <input type="range" id="inflationRate" min="0" max="10" step="0.1" value="2">
+            </div>
+            <div class="toggle-switch">
+                <label class="switch">
+                    <input type="checkbox" id="showRealValues">
+                    <span class="slider round"></span>
+                </label>
+                <span class="toggle-label">Inflationsbereinigte Werte anzeigen</span>
+            </div>
+        </div>
+
+        <!-- Steueroptimierung Panel -->
+        <div id="taxPanel" class="feature-panel">
+            <h3>Steueroptimierung</h3>
+            <div class="control-group">
+                <label for="taxRate">
+                    Abgeltungssteuer (inkl. Soli)
+                    <span class="value-display"><span id="taxRateValue">26.375</span> %</span>
+                </label>
+                <input type="range" id="taxRate" min="0" max="30" step="0.125" value="26.375">
+            </div>
+            <div class="control-group">
+                <label for="taxAllowance">
+                    Jährlicher Freibetrag
+                    <span class="value-display"><span id="taxAllowanceValue">1000</span> €</span>
+                </label>
+                <input type="range" id="taxAllowance" min="0" max="2000" step="50" value="1000">
+            </div>
+            <div class="toggle-switch">
+                <label class="switch">
+                    <input type="checkbox" id="showTaxEffect">
+                    <span class="slider round"></span>
+                </label>
+                <span class="toggle-label">Steuereffekt anzeigen</span>
+            </div>
+            <div class="etf-type-selector">
+                <label><input type="radio" name="etfType" value="accumulating" checked> Thesaurierend</label>
+                <label><input type="radio" name="etfType" value="distributing"> Ausschüttend</label>
+            </div>
+        </div>
+
         <div class="button-group">
             <button onclick="resetInputs()">Zurücksetzen</button>
         </div>
@@ -526,6 +763,9 @@
     <script>
         let chart;
         let isFireMode = false;
+        let isShowingRealValues = false;
+        let isShowingTaxEffect = false;
+        let etfType = 'accumulating';
 
         function formatCurrency(value) {
             return new Intl.NumberFormat('de-DE', {
@@ -561,51 +801,143 @@
             return yearlyIncome / safeWithdrawalRate;
         }
 
-        function calculateWealth(monthlyInvestment, interestRate, investmentPeriod, totalPeriod, initialInvestment) {
+        function calculateWealthExtended(monthlyInvestment, interestRate, investmentPeriod, totalPeriod, initialInvestment, options) {
             const currentAge = parseInt(document.getElementById('currentAge').value);
             const retirementAge = parseInt(document.getElementById('retirementAge').value);
             const yearlyInvestment = monthlyInvestment * 12;
+            
+            // Default-Optionen
+            const defaults = {
+                inflationRate: 0,
+                applyTaxes: false,
+                taxRate: 26.375 / 100,
+                taxAllowance: 1000,
+                etfType: 'accumulating'
+            };
+            
+            const settings = { ...defaults, ...options };
+            
             const results = {
                 ages: [],
                 investments: [],
                 gains: [],
+                realInvestments: [],
+                realGains: [],
+                afterTaxGains: [],
+                afterTaxTotal: [],
                 continuedSavings: [],
                 totalInvestment: initialInvestment,
                 totalGains: 0,
                 finalWealth: 0,
-                targetYear: null
+                targetYear: null,
+                taxPaid: 0
             };
-
+            
             let totalInvestment = initialInvestment;
             let totalWealth = initialInvestment;
             let continuedSavingsTotal = initialInvestment;
-
+            let cumulativeTaxPaid = 0;
+            let annualDividends = 0;
+            
+            // Inflationseffekt auf Kaufkraft
+            let inflationFactor = 1;
+            
             for (let year = 0; year < totalPeriod; year++) {
                 const currentYearAge = currentAge + year;
                 if (currentYearAge > 95) break;
-
+                
                 const isRetired = isFireMode && currentYearAge >= retirementAge;
-
+                
+                // Inflationsfaktor aktualisieren
+                if (year > 0) {
+                    inflationFactor *= (1 + settings.inflationRate / 100);
+                }
+                
+                // Jährliche Einzahlung
                 if (!isRetired && year < investmentPeriod) {
                     totalInvestment += yearlyInvestment;
                 }
-
-                totalWealth = (totalWealth + (year < investmentPeriod ? yearlyInvestment : 0)) 
-                    * (1 + interestRate / 100);
-
+                
+                // Steuern berechnen basierend auf ETF-Typ
+                let taxableAmount = 0;
+                let taxPaidThisYear = 0;
+                
+                if (settings.applyTaxes && year > 0) {
+                    if (settings.etfType === 'distributing') {
+                        // Bei ausschüttenden ETFs: Steuern auf jährliche Dividenden
+                        annualDividends = totalWealth * (interestRate / 100) * 0.7; // Annahme: 70% der Rendite kommt aus Dividenden
+                        
+                        // Freibetrag berücksichtigen
+                        taxableAmount = Math.max(0, annualDividends - settings.taxAllowance);
+                        taxPaidThisYear = taxableAmount * settings.taxRate;
+                        
+                        // Reinvestieren der Netto-Dividenden
+                        totalWealth = totalWealth + yearlyInvestment - taxPaidThisYear + 
+                                     (totalWealth * (interestRate / 100));
+                    } else {
+                        // Bei thesaurierenden ETFs: Keine jährliche Steuer (Vereinfachung)
+                        totalWealth = (totalWealth + (year < investmentPeriod ? yearlyInvestment : 0)) 
+                                    * (1 + interestRate / 100);
+                    }
+                } else {
+                    // Ohne Steuern
+                    totalWealth = (totalWealth + (year < investmentPeriod ? yearlyInvestment : 0)) 
+                                * (1 + interestRate / 100);
+                }
+                
+                cumulativeTaxPaid += taxPaidThisYear;
+                
                 continuedSavingsTotal += yearlyInvestment;
-
+                
+                // Nominale Werte
+                const yearGains = Math.max(0, totalWealth - totalInvestment);
+                
+                // Reale (inflationsbereinigte) Werte
+                const realTotalInvestment = totalInvestment / inflationFactor;
+                const realTotalWealth = totalWealth / inflationFactor;
+                const realGains = Math.max(0, realTotalWealth - realTotalInvestment);
+                
+                // Werte speichern
                 results.ages.push(currentYearAge);
                 results.investments.push(totalInvestment);
-                results.gains.push(Math.max(0, totalWealth - totalInvestment));
+                results.gains.push(yearGains);
+                results.realInvestments.push(realTotalInvestment);
+                results.realGains.push(realGains);
                 results.continuedSavings.push(continuedSavingsTotal);
+                
+                // Nach-Steuer-Werte (vereinfachte Schätzung)
+                const afterTaxGain = settings.applyTaxes ? 
+                    yearGains * (1 - (settings.etfType === 'accumulating' ? settings.taxRate : 0)) :
+                    yearGains;
+                
+                results.afterTaxGains.push(afterTaxGain);
+                results.afterTaxTotal.push(totalInvestment + afterTaxGain);
             }
-
+            
+            // Zusammenfassung
             results.totalInvestment = totalInvestment;
             results.totalGains = totalWealth - totalInvestment;
             results.finalWealth = totalWealth;
+            results.taxPaid = cumulativeTaxPaid;
+            
+            // Reale Werte
+            if (settings.inflationRate > 0) {
+                results.realTotalInvestment = totalInvestment / inflationFactor;
+                results.realTotalGains = (totalWealth - totalInvestment) / inflationFactor;
+                results.realFinalWealth = totalWealth / inflationFactor;
+            }
+            
+            // Nach-Steuer-Werte für thesaurierende ETFs (vereinfacht)
+            if (settings.applyTaxes && settings.etfType === 'accumulating') {
+                const finalTaxOnGains = results.totalGains * settings.taxRate;
+                results.afterTaxFinalWealth = totalInvestment + (results.totalGains - finalTaxOnGains);
+            } else {
+                results.afterTaxFinalWealth = results.finalWealth - cumulativeTaxPaid;
+            }
+            
+            // Gesamtrendite
             results.returnRate = ((totalWealth / totalInvestment - 1) * 100);
-
+            
             return results;
         }
 
@@ -617,7 +949,18 @@
             const investmentPeriod = parseInt(document.getElementById('investmentPeriod').value);
             const totalPeriod = parseInt(document.getElementById('totalPeriod').value);
             const targetAmount = parseFloat(document.getElementById('targetAmount').value);
-
+            
+            // Neue Parameter
+            const inflationRate = isShowingRealValues ? parseFloat(document.getElementById('inflationRate').value) : 0;
+            const taxRate = isShowingTaxEffect ? parseFloat(document.getElementById('taxRate').value) / 100 : 0;
+            const taxAllowance = parseFloat(document.getElementById('taxAllowance').value);
+            
+            // Pessimistisches und optimistisches Szenario
+            const pessimisticDiff = parseFloat(document.getElementById('pessimisticRate').value);
+            const optimisticDiff = parseFloat(document.getElementById('optimisticRate').value);
+            const pessimisticRate = Math.max(0, interestRate - pessimisticDiff);
+            const optimisticRate = interestRate + optimisticDiff;
+            
             // Update display values
             document.querySelector('#currentAge').parentElement.querySelector('.value-display').textContent = 
                 `${currentAge} Jahre`;
@@ -638,45 +981,207 @@
             document.getElementById('currentRate').textContent = interestRate.toFixed(1);
             document.getElementById('doublingYears').textContent = Math.round(72 / interestRate);
 
-            const data = calculateWealth(monthlyInvestment, interestRate, investmentPeriod, totalPeriod, initialInvestment);
-
-            // Update summary values
-            document.getElementById('totalInvestment').textContent = formatCurrency(data.totalInvestment);
-            document.getElementById('totalGains').textContent = formatCurrency(data.totalGains);
-            document.getElementById('finalWealth').textContent = formatCurrency(data.finalWealth);
-            document.getElementById('returnRate').textContent = `${data.returnRate.toFixed(1)} %`;
-
-            // Update Meilensteine
-            updateMilestones(data.finalWealth);
-
+            // Szenario-Berechnungen
+            const baseOptions = {
+                inflationRate: inflationRate,
+                applyTaxes: isShowingTaxEffect,
+                taxRate: taxRate,
+                taxAllowance: taxAllowance,
+                etfType: etfType
+            };
+            
+            // Basis-Szenario
+            const baseData = calculateWealthExtended(
+                monthlyInvestment, 
+                interestRate, 
+                investmentPeriod, 
+                totalPeriod, 
+                initialInvestment,
+                baseOptions
+            );
+            
+            // Pessimistisches Szenario
+            const pessimisticData = calculateWealthExtended(
+                monthlyInvestment, 
+                pessimisticRate, 
+                investmentPeriod, 
+                totalPeriod, 
+                initialInvestment,
+                baseOptions
+            );
+            
+            // Optimistisches Szenario
+            const optimisticData = calculateWealthExtended(
+                monthlyInvestment, 
+                optimisticRate, 
+                investmentPeriod, 
+                totalPeriod, 
+                initialInvestment,
+                baseOptions
+            );
+            
+            // Update summary values basierend auf den Einstellungen
+            if (isShowingRealValues) {
+                document.getElementById('totalInvestment').textContent = formatCurrency(baseData.realTotalInvestment);
+                document.getElementById('totalGains').textContent = formatCurrency(baseData.realTotalGains);
+                document.getElementById('finalWealth').textContent = formatCurrency(baseData.realFinalWealth);
+            } else if (isShowingTaxEffect) {
+                document.getElementById('totalInvestment').textContent = formatCurrency(baseData.totalInvestment);
+                document.getElementById('totalGains').textContent = formatCurrency(baseData.totalGains - baseData.taxPaid);
+                document.getElementById('finalWealth').textContent = formatCurrency(baseData.afterTaxFinalWealth);
+            } else {
+                document.getElementById('totalInvestment').textContent = formatCurrency(baseData.totalInvestment);
+                document.getElementById('totalGains').textContent = formatCurrency(baseData.totalGains);
+                document.getElementById('finalWealth').textContent = formatCurrency(baseData.finalWealth);
+            }
+            
+            document.getElementById('returnRate').textContent = `${baseData.returnRate.toFixed(1)} %`;
+            
             // Update Asset Allocation
             updateAssetAllocation(currentAge);
-
+            
             if (chart) {
                 chart.destroy();
             }
+            
+            // Chart-Datensätze basierend auf aktiven Features
+            const datasets = [];
+            
+            // Prüfen, ob überhaupt ein Panel aktiv ist
+            const isAnyPanelActive = document.querySelector('.feature-panel.active') !== null;
+            const isScenarioPanelActive = document.getElementById('scenarioPanel').classList.contains('active');
 
-            const ctx = document.getElementById('wealthChart').getContext('2d');
-            chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: data.ages,
-                    datasets: [{
-                        label: 'Weitersparen ohne Ruhestand',
-                        data: data.continuedSavings,
-                        backgroundColor: 'rgba(148, 163, 184, 0.7)',
-                        order: 3
-                    }, {
-                        label: 'Zinsgewinn',
-                        data: data.gains,
-                        backgroundColor: '#6F8A63',
-                        order: 2
-                    }, {
-                        label: 'Einzahlungen',
-                        data: data.investments,
+            // Wenn kein Panel aktiv ist oder wenn das Szenario-Panel nicht aktiv ist, standard Balkendiagramm verwenden
+            if (!isAnyPanelActive || !isScenarioPanelActive) {
+                // Grundlegende Darstellung (gestapeltes Balkendiagramm)
+                if (isShowingRealValues) {
+                    datasets.push({
+                        label: 'Einzahlungen (inflationsbereinigt)',
+                        data: baseData.realInvestments,
                         backgroundColor: '#3D6BC7',
                         order: 1
-                    }]
+                    });
+                    datasets.push({
+                        label: 'Zinsgewinn (inflationsbereinigt)',
+                        data: baseData.realGains,
+                        backgroundColor: '#6F8A63',
+                        order: 2
+                    });
+                } else if (isShowingTaxEffect) {
+                    datasets.push({
+                        label: 'Einzahlungen',
+                        data: baseData.investments,
+                        backgroundColor: '#3D6BC7',
+                        order: 1
+                    });
+                    datasets.push({
+                        label: 'Zinsgewinn (nach Steuern)',
+                        data: baseData.afterTaxGains,
+                        backgroundColor: '#6F8A63',
+                        order: 2
+                    });
+                    if (baseData.taxPaid > 0) {
+                        const taxValues = baseData.gains.map((gain, i) => 
+                            baseData.gains[i] - baseData.afterTaxGains[i]
+                        );
+                        datasets.push({
+                            label: 'Steuern',
+                            data: taxValues,
+                            backgroundColor: '#f43f5e',
+                            order: 3
+                        });
+                    }
+                } else {
+                    datasets.push({
+                        label: 'Einzahlungen',
+                        data: baseData.investments,
+                        backgroundColor: '#3D6BC7',
+                        order: 1
+                    });
+                    datasets.push({
+                        label: 'Zinsgewinn',
+                        data: baseData.gains,
+                        backgroundColor: '#6F8A63',
+                        order: 2
+                    });
+                }
+            } else {
+                // Scenario-Comparison (Liniendiagramm)
+                let baseChartData;
+                let pessimisticChartData;
+                let optimisticChartData;
+                
+                if (isShowingRealValues) {
+                    baseChartData = baseData.realInvestments.map((inv, i) => inv + baseData.realGains[i]);
+                    pessimisticChartData = pessimisticData.realInvestments.map((inv, i) => inv + pessimisticData.realGains[i]);
+                    optimisticChartData = optimisticData.realInvestments.map((inv, i) => inv + optimisticData.realGains[i]);
+                } else if (isShowingTaxEffect) {
+                    baseChartData = baseData.afterTaxTotal;
+                    pessimisticChartData = pessimisticData.afterTaxTotal;
+                    optimisticChartData = optimisticData.afterTaxTotal;
+                } else {
+                    baseChartData = baseData.investments.map((inv, i) => inv + baseData.gains[i]);
+                    pessimisticChartData = pessimisticData.investments.map((inv, i) => inv + pessimisticData.gains[i]);
+                    optimisticChartData = optimisticData.investments.map((inv, i) => inv + optimisticData.gains[i]);
+                }
+                
+                datasets.push({
+                    label: `Pessimistisch (${pessimisticRate.toFixed(1)}%)`,
+                    data: pessimisticChartData,
+                    borderColor: '#f43f5e',
+                    backgroundColor: 'rgba(244, 63, 94, 0.1)',
+                    fill: false,
+                    borderWidth: 2,
+                    tension: 0.1,
+                    type: 'line',
+                    order: 4
+                });
+                
+                datasets.push({
+                    label: `Basis (${interestRate.toFixed(1)}%)`,
+                    data: baseChartData,
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    fill: false,
+                    borderWidth: 3,
+                    tension: 0.1,
+                    type: 'line',
+                    order: 3
+                });
+                
+                datasets.push({
+                    label: `Optimistisch (${optimisticRate.toFixed(1)}%)`,
+                    data: optimisticChartData,
+                    borderColor: '#16a34a',
+                    backgroundColor: 'rgba(22, 163, 74, 0.1)',
+                    fill: false,
+                    borderWidth: 2,
+                    tension: 0.1,
+                    type: 'line',
+                    order: 5
+                });
+                
+                // Einzahlungen als Referenz
+                datasets.push({
+                    label: 'Einzahlungen',
+                    data: isShowingRealValues ? baseData.realInvestments : baseData.investments,
+                    borderColor: '#94a3b8',
+                    backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                    fill: false,
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    tension: 0.1,
+                    type: 'line',
+                    order: 6
+                });
+            }
+            
+            const ctx = document.getElementById('wealthChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: isScenarioPanelActive ? 'line' : 'bar',
+                data: {
+                    labels: baseData.ages,
+                    datasets: datasets
                 },
                 options: {
                     responsive: true,
@@ -684,7 +1189,7 @@
                     aspectRatio: 2,
                     scales: {
                         x: {
-                            stacked: true,
+                            stacked: !isScenarioPanelActive,
                             grid: {
                                 display: false
                             },
@@ -694,10 +1199,10 @@
                             }
                         },
                         y: {
-                            stacked: true,
+                            stacked: !isScenarioPanelActive,
                             title: {
                                 display: true,
-                                text: 'Vermögen (€)'
+                                text: isShowingRealValues ? 'Vermögen (inflationsbereinigt €)' : 'Vermögen (€)'
                             },
                             ticks: {
                                 callback: value => formatCurrency(value)
@@ -737,17 +1242,90 @@
                     }
                 }
             });
-
+            
             // Berechne und zeige die Zeit bis zum Zielvermögen
-            const yearsToTarget = data.ages.findIndex((age, index) => 
-                (data.investments[index] + data.gains[index]) >= targetAmount);
+            const yearsToTarget = baseData.ages.findIndex((age, index) => 
+                (baseData.investments[index] + baseData.gains[index]) >= targetAmount);
             
             if (yearsToTarget !== -1) {
                 document.getElementById('targetYear').textContent = 
-                    `Zielvermögen wird mit ${data.ages[yearsToTarget]} Jahren erreicht`;
+                    `Zielvermögen wird mit ${baseData.ages[yearsToTarget]} Jahren erreicht`;
             } else {
                 document.getElementById('targetYear').textContent = 
                     'Zielvermögen wird im betrachteten Zeitraum nicht erreicht';
+            }
+            
+            // Wenn Steuer-Panel aktiv ist, zeige Steuervergleich
+            if (document.getElementById('taxPanel').classList.contains('active') && isShowingTaxEffect) {
+                // Berechnung für beide ETF-Typen
+                const accumulatingData = calculateWealthExtended(
+                    monthlyInvestment, 
+                    interestRate, 
+                    investmentPeriod, 
+                    totalPeriod, 
+                    initialInvestment,
+                    {
+                        inflationRate: inflationRate,
+                        applyTaxes: true,
+                        taxRate: taxRate,
+                        taxAllowance: taxAllowance,
+                        etfType: 'accumulating'
+                    }
+                );
+                
+                const distributingData = calculateWealthExtended(
+                    monthlyInvestment, 
+                    interestRate, 
+                    investmentPeriod, 
+                    totalPeriod, 
+                    initialInvestment,
+                    {
+                        inflationRate: inflationRate,
+                        applyTaxes: true,
+                        taxRate: taxRate,
+                        taxAllowance: taxAllowance,
+                        etfType: 'distributing'
+                    }
+                );
+                
+                // Tax comparison anzeigen (falls noch nicht vorhanden)
+                let taxComparisonEl = document.getElementById('taxComparison');
+                if (!taxComparisonEl) {
+                    taxComparisonEl = document.createElement('div');
+                    taxComparisonEl.id = 'taxComparison';
+                    taxComparisonEl.className = 'tax-comparison';
+                    document.getElementById('taxPanel').appendChild(taxComparisonEl);
+                }
+                
+                taxComparisonEl.innerHTML = `
+                    <div class="tax-card">
+                        <div class="tax-card-title">Thesaurierend</div>
+                        <div class="tax-card-value">${formatCurrency(accumulatingData.afterTaxFinalWealth)}</div>
+                        <div class="tax-card-label">Endvermögen nach Steuern</div>
+                        <div class="tax-card-value" style="margin-top: 1rem">${formatCurrency(accumulatingData.totalGains - (accumulatingData.finalWealth - accumulatingData.afterTaxFinalWealth))}</div>
+                        <div class="tax-card-label">Nettogewinn</div>
+                    </div>
+                    <div class="tax-card">
+                        <div class="tax-card-title">Ausschüttend</div>
+                        <div class="tax-card-value">${formatCurrency(distributingData.afterTaxFinalWealth)}</div>
+                        <div class="tax-card-label">Endvermögen nach Steuern</div>
+                        <div class="tax-card-value" style="margin-top: 1rem">${formatCurrency(distributingData.totalGains - distributingData.taxPaid)}</div>
+                        <div class="tax-card-label">Nettogewinn</div>
+                    </div>
+                    <div class="tax-card">
+                        <div class="tax-card-title">Steuervorteil</div>
+                        <div class="tax-card-value">${formatCurrency(Math.abs(accumulatingData.afterTaxFinalWealth - distributingData.afterTaxFinalWealth))}</div>
+                        <div class="tax-card-label">Absoluter Unterschied</div>
+                        <div class="tax-card-value" style="margin-top: 1rem">${(Math.abs(accumulatingData.afterTaxFinalWealth - distributingData.afterTaxFinalWealth) / baseData.finalWealth * 100).toFixed(2)}%</div>
+                        <div class="tax-card-label">Relativer Unterschied</div>
+                    </div>
+                `;
+            } else {
+                // Entferne Tax-Comparison wenn nicht aktiv
+                const taxComparisonEl = document.getElementById('taxComparison');
+                if (taxComparisonEl) {
+                    taxComparisonEl.remove();
+                }
             }
         }
 
@@ -771,6 +1349,13 @@
                 document.getElementById('investmentPeriod').value = params.get('period');
                 document.getElementById('totalPeriod').value = params.get('total');
             }
+            
+            // Initialize new controls
+            setupToggleButtons();
+            setupScenarioControls();
+            setupInflationControls();
+            setupTaxControls();
+            
             updateChart();
         });
 
@@ -815,6 +1400,98 @@
                 } else {
                     item.classList.remove('reached');
                 }
+            });
+        }
+
+        function setupToggleButtons() {
+            const panels = {
+                'scenarioToggle': 'scenarioPanel',
+                'inflationToggle': 'inflationPanel',
+                'taxToggle': 'taxPanel'
+            };
+            
+            Object.keys(panels).forEach(toggleId => {
+                document.getElementById(toggleId).addEventListener('click', () => {
+                    // Update toggle buttons
+                    document.querySelectorAll('.toggle-button').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    document.getElementById(toggleId).classList.add('active');
+                    
+                    // Update panels
+                    document.querySelectorAll('.feature-panel').forEach(panel => {
+                        panel.classList.remove('active');
+                    });
+                    document.getElementById(panels[toggleId]).classList.add('active');
+                    
+                    updateChart();
+                });
+            });
+        }
+
+        function setupScenarioControls() {
+            // Scenario controls
+            document.getElementById('pessimisticRate').addEventListener('input', function() {
+                const diff = parseFloat(this.value);
+                const baseRate = parseFloat(document.getElementById('interestRate').value);
+                const pessimisticRate = Math.max(0, baseRate - diff);
+                
+                document.getElementById('pessimisticDiff').textContent = diff.toFixed(1);
+                document.getElementById('pessimisticRateValue').textContent = pessimisticRate.toFixed(1);
+                
+                updateChart();
+            });
+            
+            document.getElementById('optimisticRate').addEventListener('input', function() {
+                const diff = parseFloat(this.value);
+                const baseRate = parseFloat(document.getElementById('interestRate').value);
+                const optimisticRate = baseRate + diff;
+                
+                document.getElementById('optimisticDiff').textContent = diff.toFixed(1);
+                document.getElementById('optimisticRateValue').textContent = optimisticRate.toFixed(1);
+                
+                updateChart();
+            });
+        }
+
+        function setupInflationControls() {
+            // Inflation controls
+            document.getElementById('inflationRate').addEventListener('input', function() {
+                const inflationRate = parseFloat(this.value);
+                document.getElementById('inflationRateValue').textContent = inflationRate.toFixed(1);
+                updateChart();
+            });
+            
+            document.getElementById('showRealValues').addEventListener('change', function() {
+                isShowingRealValues = this.checked;
+                updateChart();
+            });
+        }
+
+        function setupTaxControls() {
+            // Tax controls
+            document.getElementById('taxRate').addEventListener('input', function() {
+                const taxRate = parseFloat(this.value);
+                document.getElementById('taxRateValue').textContent = taxRate.toFixed(3);
+                updateChart();
+            });
+            
+            document.getElementById('taxAllowance').addEventListener('input', function() {
+                const taxAllowance = parseFloat(this.value);
+                document.getElementById('taxAllowanceValue').textContent = taxAllowance;
+                updateChart();
+            });
+            
+            document.getElementById('showTaxEffect').addEventListener('change', function() {
+                isShowingTaxEffect = this.checked;
+                updateChart();
+            });
+            
+            document.querySelectorAll('input[name="etfType"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    etfType = this.value;
+                    updateChart();
+                });
             });
         }
     </script>
