@@ -867,6 +867,10 @@
             <div class="control-group">
                 <label for="retirementAge">
                     Gewünschtes Rentenalter
+                    <span class="tooltip">
+                        <span class="info-icon">i</span>
+                        <span class="tooltip-text">Das Alter, in dem Sie finanziell unabhängig sein möchten. Die Berechnung zeigt, ob Sie dieses Ziel mit Ihren aktuellen Sparraten erreichen können.</span>
+                    </span>
                     <span class="value-display">65 Jahre</span>
                 </label>
                 <input type="range" id="retirementAge" min="30" max="80" step="1" value="65">
@@ -874,6 +878,10 @@
             <div class="control-group">
                 <label for="monthlyRetirementIncome">
                     Gewünschtes monatliches Renteneinkommen
+                    <span class="tooltip">
+                        <span class="info-icon">i</span>
+                        <span class="tooltip-text">Der monatliche Betrag, den Sie im Ruhestand entnehmen möchten. Das erforderliche Kapital wird basierend auf einer sicheren Entnahmerate berechnet.</span>
+                    </span>
                     <span class="value-display">2.000 €</span>
                 </label>
                 <input type="range" id="monthlyRetirementIncome" min="500" max="10000" step="100" value="2000">
@@ -970,6 +978,7 @@
 
         <div class="button-group">
             <button onclick="resetInputs()">Zurücksetzen</button>
+            <button id="modeToggle" onclick="toggleCalculationMode()" class="secondary">Zu FIRE-Rechner wechseln</button>
         </div>
 
         <div class="rules-container">
@@ -1056,25 +1065,54 @@
                 button.textContent = 'Zu Zielvermögen wechseln';
                 targetControls.style.display = 'none';
                 retirementControls.forEach(control => control.parentElement.style.display = 'flex');
+                
+                // Aktualisieren der Anzeige für die Rentenwerte
+                updateRetirementDisplayValues();
             } else {
                 button.textContent = 'Zu FIRE-Rechner wechseln';
                 targetControls.style.display = 'flex';
                 retirementControls.forEach(control => control.parentElement.style.display = 'none');
             }
+            
             updateChart();
         }
 
+        // Vollständig überarbeitete updateRetirementDisplayValues Funktion
+        function updateRetirementDisplayValues() {
+            const retirementAge = document.getElementById('retirementAge').value;
+            const monthlyRetirementIncome = document.getElementById('monthlyRetirementIncome').value;
+            
+            // Direkter Zugriff auf die DOM-Elemente
+            const retirementAgeDisplay = document.querySelector('#retirementAge').parentElement.querySelector('.value-display');
+            const monthlyRetirementIncomeDisplay = document.querySelector('#monthlyRetirementIncome').parentElement.querySelector('.value-display');
+            
+            // Werte setzen
+            retirementAgeDisplay.textContent = `${retirementAge} Jahre`;
+            monthlyRetirementIncomeDisplay.textContent = formatCurrency(monthlyRetirementIncome);
+        }
+
         function calculateRequiredRetirementCapital(monthlyIncome, interestRate) {
-            // Verwendung der 4%-Regel als Basis, angepasst an den tatsächlichen Zinssatz
-            const safeWithdrawalRate = interestRate / 100 / 1.5; // Conservative estimate
+            // Die 4%-Regel als Basis verwenden
+            let safeWithdrawalRate = 0.04;
+            
+            // Anpassung basierend auf dem tatsächlichen Zinssatz (konservativ)
+            if (interestRate > 6) {
+                safeWithdrawalRate = Math.min(0.05, interestRate / 100 * 0.7);
+            } else if (interestRate < 4) {
+                safeWithdrawalRate = Math.max(0.03, interestRate / 100 * 0.8);
+            }
+            
             const yearlyIncome = monthlyIncome * 12;
             return yearlyIncome / safeWithdrawalRate;
         }
 
+        // Vollständige Überarbeitung der calculateWealthExtended-Funktion
         function calculateWealthExtended(monthlyInvestment, interestRate, investmentPeriod, totalPeriod, initialInvestment, options) {
             const currentAge = parseInt(document.getElementById('currentAge').value);
-            const retirementAge = parseInt(document.getElementById('retirementAge').value);
+            const retirementAge = isFireMode ? parseInt(document.getElementById('retirementAge').value) : 0;
+            const monthlyRetirementIncome = isFireMode ? parseFloat(document.getElementById('monthlyRetirementIncome').value) : 0;
             const yearlyInvestment = monthlyInvestment * 12;
+            const yearlyRetirementWithdrawal = monthlyRetirementIncome * 12;
             
             // Default-Optionen
             const defaults = {
@@ -1095,7 +1133,6 @@
                 realGains: [],
                 afterTaxGains: [],
                 afterTaxTotal: [],
-                continuedSavings: [],
                 totalInvestment: initialInvestment,
                 totalGains: 0,
                 finalWealth: 0,
@@ -1105,61 +1142,43 @@
             
             let totalInvestment = initialInvestment;
             let totalWealth = initialInvestment;
-            let continuedSavingsTotal = initialInvestment;
             let cumulativeTaxPaid = 0;
-            let annualDividends = 0;
             
             // Inflationseffekt auf Kaufkraft
             let inflationFactor = 1;
             
+            // Startjahr ist immer das aktuelle Alter
             for (let year = 0; year < totalPeriod; year++) {
                 const currentYearAge = currentAge + year;
                 if (currentYearAge > 95) break;
-                
-                const isRetired = isFireMode && currentYearAge >= retirementAge;
                 
                 // Inflationsfaktor aktualisieren
                 if (year > 0) {
                     inflationFactor *= (1 + settings.inflationRate / 100);
                 }
                 
-                // Jährliche Einzahlung
-                if (!isRetired && year < investmentPeriod) {
+                // Im FIRE-Modus: Nach Erreichen des Rentenalters, Entnahmen anstatt Einzahlungen
+                const isRetired = isFireMode && currentYearAge >= retirementAge;
+                
+                // Zinsberechnung für das vorhandene Vermögen
+                const interestEarned = totalWealth * (interestRate / 100);
+                
+                // Monatliche Einzahlungen/Entnahmen
+                if (isRetired) {
+                    // Entnahmen im Ruhestand
+                    totalWealth = totalWealth + interestEarned - yearlyRetirementWithdrawal;
+                    // Vermögen kann nicht negativ werden
+                    totalWealth = Math.max(0, totalWealth);
+                } else if (year < investmentPeriod) {
+                    // Einzahlungen in der Ansparphase - Startjahr ist das aktuelle Alter
                     totalInvestment += yearlyInvestment;
-                }
-                
-                // Steuern berechnen basierend auf ETF-Typ
-                let taxableAmount = 0;
-                let taxPaidThisYear = 0;
-                
-                if (settings.applyTaxes && year > 0) {
-                    if (settings.etfType === 'distributing') {
-                        // Bei ausschüttenden ETFs: Steuern auf jährliche Dividenden
-                        annualDividends = totalWealth * (interestRate / 100) * 0.7; // Annahme: 70% der Rendite kommt aus Dividenden
-                        
-                        // Freibetrag berücksichtigen
-                        taxableAmount = Math.max(0, annualDividends - settings.taxAllowance);
-                        taxPaidThisYear = taxableAmount * settings.taxRate;
-                        
-                        // Reinvestieren der Netto-Dividenden
-                        totalWealth = totalWealth + yearlyInvestment - taxPaidThisYear + 
-                                     (totalWealth * (interestRate / 100));
-                    } else {
-                        // Bei thesaurierenden ETFs: Keine jährliche Steuer (Vereinfachung)
-                        totalWealth = (totalWealth + (year < investmentPeriod ? yearlyInvestment : 0)) 
-                                    * (1 + interestRate / 100);
-                    }
+                    totalWealth = totalWealth + interestEarned + yearlyInvestment;
                 } else {
-                    // Ohne Steuern
-                    totalWealth = (totalWealth + (year < investmentPeriod ? yearlyInvestment : 0)) 
-                                * (1 + interestRate / 100);
+                    // Keine Einzahlungen mehr, aber weiterhin Zinsen
+                    totalWealth = totalWealth + interestEarned;
                 }
                 
-                cumulativeTaxPaid += taxPaidThisYear;
-                
-                continuedSavingsTotal += yearlyInvestment;
-                
-                // Nominale Werte
+                // Berechne den Gewinn (Differenz zwischen Gesamtvermögen und Einzahlungen)
                 const yearGains = Math.max(0, totalWealth - totalInvestment);
                 
                 // Reale (inflationsbereinigte) Werte
@@ -1167,15 +1186,14 @@
                 const realTotalWealth = totalWealth / inflationFactor;
                 const realGains = Math.max(0, realTotalWealth - realTotalInvestment);
                 
-                // Werte speichern
-                results.ages.push(currentYearAge);
+                // Werte für das aktuelle Jahr speichern
+                results.ages.push(currentYearAge);  // Wir fügen das tatsächliche Alter hinzu
                 results.investments.push(totalInvestment);
                 results.gains.push(yearGains);
                 results.realInvestments.push(realTotalInvestment);
                 results.realGains.push(realGains);
-                results.continuedSavings.push(continuedSavingsTotal);
                 
-                // Nach-Steuer-Werte (vereinfachte Schätzung)
+                // Nach-Steuer-Werte
                 const afterTaxGain = settings.applyTaxes ? 
                     yearGains * (1 - (settings.etfType === 'accumulating' ? settings.taxRate : 0)) :
                     yearGains;
@@ -1186,7 +1204,7 @@
             
             // Zusammenfassung
             results.totalInvestment = totalInvestment;
-            results.totalGains = totalWealth - totalInvestment;
+            results.totalGains = Math.max(0, totalWealth - totalInvestment);
             results.finalWealth = totalWealth;
             results.taxPaid = cumulativeTaxPaid;
             
@@ -1197,16 +1215,12 @@
                 results.realFinalWealth = totalWealth / inflationFactor;
             }
             
-            // Nach-Steuer-Werte für thesaurierende ETFs (vereinfacht)
-            if (settings.applyTaxes && settings.etfType === 'accumulating') {
-                const finalTaxOnGains = results.totalGains * settings.taxRate;
-                results.afterTaxFinalWealth = totalInvestment + (results.totalGains - finalTaxOnGains);
-            } else {
-                results.afterTaxFinalWealth = results.finalWealth - cumulativeTaxPaid;
-            }
-            
             // Gesamtrendite
-            results.returnRate = ((totalWealth / totalInvestment - 1) * 100);
+            if (totalInvestment > 0) {
+                results.returnRate = ((totalWealth / totalInvestment - 1) * 100);
+            } else {
+                results.returnRate = 0;
+            }
             
             return results;
         }
@@ -1219,6 +1233,19 @@
             const investmentPeriod = parseInt(document.getElementById('investmentPeriod').value);
             const totalPeriod = parseInt(document.getElementById('totalPeriod').value);
             const targetAmount = parseFloat(document.getElementById('targetAmount').value);
+            
+            // FIRE-Modus-Parameter
+            const retirementAge = parseInt(document.getElementById('retirementAge').value);
+            const monthlyRetirementIncome = parseFloat(document.getElementById('monthlyRetirementIncome').value);
+            
+            // Berechnung des erforderlichen Kapitals für den FIRE-Modus
+            let effectiveTargetAmount = targetAmount;
+            if (isFireMode) {
+                effectiveTargetAmount = calculateRequiredRetirementCapital(monthlyRetirementIncome, interestRate);
+                // Aktualisiere die Anzeige für das effektive Zielvermögen
+                document.querySelector('#targetAmount').parentElement.querySelector('.value-display').textContent = 
+                    formatCurrency(effectiveTargetAmount);
+            }
             
             // Neue Parameter
             const inflationRate = isShowingRealValues ? parseFloat(document.getElementById('inflationRate').value) : 0;
@@ -1245,7 +1272,7 @@
             document.querySelector('#totalPeriod').parentElement.querySelector('.value-display').textContent = 
                 `${totalPeriod} Jahre`;
             document.querySelector('#targetAmount').parentElement.querySelector('.value-display').textContent = 
-                formatCurrency(targetAmount);
+                formatCurrency(effectiveTargetAmount);
 
             // Update 72er-Regel
             document.getElementById('currentRate').textContent = interestRate.toFixed(1);
@@ -1450,7 +1477,7 @@
             chart = new Chart(ctx, {
                 type: isScenarioPanelActive ? 'line' : 'bar',
                 data: {
-                    labels: baseData.ages,
+                    labels: baseData.ages,  // Diese Labels sind jetzt die tatsächlichen Alterswerte
                     datasets: datasets
                 },
                 options: {
@@ -1489,15 +1516,31 @@
                             annotations: {
                                 targetLine: {
                                     type: 'line',
-                                    yMin: targetAmount,
-                                    yMax: targetAmount,
+                                    yMin: effectiveTargetAmount,
+                                    yMax: effectiveTargetAmount,
                                     borderColor: 'rgb(244, 63, 94)',
                                     borderWidth: 2,
                                     borderDash: [5, 5],
                                     label: {
                                         enabled: true,
-                                        content: `Zielvermögen: ${formatCurrency(targetAmount)}`,
+                                        content: isFireMode ? 
+                                            `Benötigtes FIRE-Kapital: ${formatCurrency(effectiveTargetAmount)}` : 
+                                            `Zielvermögen: ${formatCurrency(targetAmount)}`,
                                         position: 'end'
+                                    }
+                                },
+                                retirementLine: {
+                                    type: 'line',
+                                    xMin: retirementAge,
+                                    xMax: retirementAge,
+                                    borderColor: '#f59e0b',
+                                    borderWidth: 2,
+                                    borderDash: [5, 5],
+                                    label: {
+                                        backgroundColor: '#f59e0b',
+                                        content: 'Rentenalter',
+                                        display: true,
+                                        position: 'start'
                                     }
                                 }
                             }
@@ -1515,13 +1558,15 @@
             
             // Berechne und zeige die Zeit bis zum Zielvermögen
             const yearsToTarget = baseData.ages.findIndex((age, index) => 
-                (baseData.investments[index] + baseData.gains[index]) >= targetAmount);
+                (baseData.investments[index] + baseData.gains[index]) >= effectiveTargetAmount);
             
             if (yearsToTarget !== -1) {
-                document.getElementById('targetYear').textContent = 
+                document.getElementById('targetYear').textContent = isFireMode ?
+                    `Finanziell unabhängig mit ${baseData.ages[yearsToTarget]} Jahren (${formatCurrency(monthlyRetirementIncome)}/Monat)` :
                     `Zielvermögen wird mit ${baseData.ages[yearsToTarget]} Jahren erreicht`;
             } else {
-                document.getElementById('targetYear').textContent = 
+                document.getElementById('targetYear').textContent = isFireMode ?
+                    'Finanzielle Unabhängigkeit wird im betrachteten Zeitraum nicht erreicht' :
                     'Zielvermögen wird im betrachteten Zeitraum nicht erreicht';
             }
             
@@ -1601,12 +1646,14 @@
             // Insights generieren
             generateInsights(baseData, {
                 currentAge: currentAge,
-                targetAmount: targetAmount,
+                targetAmount: effectiveTargetAmount,
                 monthlyInvestment: monthlyInvestment,
                 interestRate: interestRate,
                 investmentPeriod: investmentPeriod,
                 totalPeriod: totalPeriod,
-                initialInvestment: initialInvestment
+                initialInvestment: initialInvestment,
+                retirementAge: retirementAge,
+                monthlyRetirementIncome: monthlyRetirementIncome
             });
         }
 
@@ -1636,6 +1683,8 @@
             setupScenarioControls();
             setupInflationControls();
             setupTaxControls();
+            
+            updateRetirementDisplayValues();
             
             updateChart();
         });
@@ -1845,6 +1894,40 @@
                 });
             }
             
+            // Wenn im FIRE-Modus, spezielle FIRE-Insights hinzufügen
+            if (isFireMode) {
+                const requiredCapital = calculateRequiredRetirementCapital(inputs.monthlyRetirementIncome, inputs.interestRate);
+                
+                const yearsToFIRE = data.ages.findIndex((age, index) => 
+                    (data.investments[index] + data.gains[index]) >= requiredCapital) - data.ages.indexOf(inputs.currentAge);
+                
+                if (yearsToFIRE > 0) {
+                    const fireAge = inputs.currentAge + yearsToFIRE;
+                    insights.push({
+                        type: 'positive',
+                        icon: '🔥',
+                        title: `FIRE mit ${fireAge} Jahren möglich`,
+                        description: `Mit Ihrer aktuellen Sparrate können Sie nach ${yearsToFIRE} Jahren in den Ruhestand gehen und monatlich ${formatCurrency(inputs.monthlyRetirementIncome)} entnehmen.`
+                    });
+                    
+                    if (fireAge < inputs.retirementAge) {
+                        insights.push({
+                            type: 'positive',
+                            icon: '🎯',
+                            title: `${inputs.retirementAge - fireAge} Jahre früher in Rente`,
+                            description: `Sie können ${inputs.retirementAge - fireAge} Jahre vor Ihrem Zielrentenalter (${inputs.retirementAge}) finanziell unabhängig sein.`
+                        });
+                    }
+                } else {
+                    insights.push({
+                        type: 'warning',
+                        icon: '⚠️',
+                        title: 'FIRE-Ziel wird nicht erreicht',
+                        description: `Um monatlich ${formatCurrency(inputs.monthlyRetirementIncome)} entnehmen zu können, benötigen Sie ca. ${formatCurrency(requiredCapital)}. Erhöhen Sie Ihre Sparrate oder senken Sie Ihre Rentenerwartungen.`
+                    });
+                }
+            }
+            
             // Insights rendern
             insights.forEach(insight => {
                 const insightElement = document.createElement('div');
@@ -1891,6 +1974,23 @@
         
         // Event-Listener für Bildschirmgrößenänderungen hinzufügen
         window.addEventListener('resize', updateChartResponsive);
+
+        // Event-Listener für die Rentenregler explizit hinzufügen
+        document.getElementById('retirementAge').addEventListener('input', function() {
+            const value = this.value;
+            document.querySelector('#retirementAge').parentElement.querySelector('.value-display').textContent = `${value} Jahre`;
+            if (isFireMode) {
+                updateChart();
+            }
+        });
+
+        document.getElementById('monthlyRetirementIncome').addEventListener('input', function() {
+            const value = this.value;
+            document.querySelector('#monthlyRetirementIncome').parentElement.querySelector('.value-display').textContent = formatCurrency(value);
+            if (isFireMode) {
+                updateChart();
+            }
+        });
     </script>
 </body>
 </html> 
