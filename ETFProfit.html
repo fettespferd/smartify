@@ -562,11 +562,11 @@
         }
 
         function calculateWealth(monthlyInvestment, interestRate, investmentPeriod, totalPeriod, initialInvestment) {
-            const yearlyInvestment = monthlyInvestment * 12;
             const currentAge = parseInt(document.getElementById('currentAge').value);
             const retirementAge = parseInt(document.getElementById('retirementAge').value);
+            const yearlyInvestment = monthlyInvestment * 12;
             const results = {
-                years: [],
+                ages: [],
                 investments: [],
                 gains: [],
                 continuedSavings: [],
@@ -580,20 +580,22 @@
             let totalWealth = initialInvestment;
             let continuedSavingsTotal = initialInvestment;
 
-            for (let year = 1; year <= totalPeriod; year++) {
+            for (let year = 0; year < totalPeriod; year++) {
                 const currentYearAge = currentAge + year;
+                if (currentYearAge > 95) break;
+
                 const isRetired = isFireMode && currentYearAge >= retirementAge;
 
-                if (!isRetired && year <= investmentPeriod) {
+                if (!isRetired && year < investmentPeriod) {
                     totalInvestment += yearlyInvestment;
                 }
 
-                totalWealth = (totalWealth + (year <= investmentPeriod ? yearlyInvestment : 0)) 
+                totalWealth = (totalWealth + (year < investmentPeriod ? yearlyInvestment : 0)) 
                     * (1 + interestRate / 100);
 
                 continuedSavingsTotal += yearlyInvestment;
 
-                results.years.push(year);
+                results.ages.push(currentYearAge);
                 results.investments.push(totalInvestment);
                 results.gains.push(Math.max(0, totalWealth - totalInvestment));
                 results.continuedSavings.push(continuedSavingsTotal);
@@ -658,7 +660,7 @@
             chart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: data.years,
+                    labels: data.ages,
                     datasets: [{
                         label: 'Weitersparen ohne Ruhestand',
                         data: data.continuedSavings,
@@ -688,7 +690,7 @@
                             },
                             title: {
                                 display: true,
-                                text: 'Jahre'
+                                text: 'Alter'
                             }
                         },
                         y: {
@@ -737,12 +739,12 @@
             });
 
             // Berechne und zeige die Zeit bis zum Zielvermögen
-            const yearsToTarget = data.years.findIndex(year => 
-                (data.investments[year] + data.gains[year]) >= targetAmount);
+            const yearsToTarget = data.ages.findIndex((age, index) => 
+                (data.investments[index] + data.gains[index]) >= targetAmount);
             
             if (yearsToTarget !== -1) {
                 document.getElementById('targetYear').textContent = 
-                    `Zielvermögen wird in ${yearsToTarget + 1} Jahren erreicht`;
+                    `Zielvermögen wird mit ${data.ages[yearsToTarget]} Jahren erreicht`;
             } else {
                 document.getElementById('targetYear').textContent = 
                     'Zielvermögen wird im betrachteten Zeitraum nicht erreicht';
