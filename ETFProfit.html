@@ -1072,12 +1072,21 @@
                 
                 // Setze einen sinnvollen Standardwert für das Zielvermögen
                 const targetAmount = document.getElementById('targetAmount');
-                if (targetAmount.value === 'NaN' || targetAmount.value === '0') {
+                if (isNaN(parseFloat(targetAmount.value)) || parseFloat(targetAmount.value) === 0) {
                     targetAmount.value = '500000';
-                    document.querySelector('#targetAmount').parentElement.querySelector('.value-display').textContent = 
-                        formatCurrency(500000);
                 }
+                // Aktualisiere die Anzeige des Zielvermögens
+                document.querySelector('#targetAmount').parentElement.querySelector('.value-display').textContent = 
+                    formatCurrency(parseFloat(targetAmount.value));
             }
+            
+            // Definiere targetAmount für die Chart-Aktualisierung
+            window.targetAmount = isFireMode ? 
+                calculateRequiredRetirementCapital(
+                    parseFloat(document.getElementById('monthlyRetirementIncome').value),
+                    parseFloat(document.getElementById('interestRate').value)
+                ) : 
+                parseFloat(document.getElementById('targetAmount').value);
             
             updateChart();
         }
@@ -1168,11 +1177,12 @@
                     if (settings.etfType === 'distributing') {
                         // Ausschüttende ETFs: Steuern auf jährliche Ausschüttungen
                         const yearlyDividend = interestEarned * 0.7; // 70% Ausschüttungsquote
-                        const taxableGains = Math.max(0, yearlyDividend - settings.taxAllowance);
+                        const teilfreistellung = 0.3; // 30% für Aktienfonds
+                        const taxableGains = Math.max(0, (yearlyDividend * (1 - teilfreistellung)) - settings.taxAllowance);
                         yearlyTaxPaid = taxableGains * settings.taxRate;
                     } else {
                         // Thesaurierende ETFs: Vorabpauschale
-                        const baseRate = 0.02; // Basiszinssatz (vereinfacht)
+                        const baseRate = Math.max(0, (interestRate * 0.7 - 1) / 100); // Vereinfachte Approximation
                         const vorabpauschale = Math.min(
                             totalWealth * baseRate,
                             interestEarned * 0.7
@@ -2056,6 +2066,15 @@
                 </div>
             `;
         }
+
+        // Füge Event-Listener für das Zielvermögen hinzu
+        document.getElementById('targetAmount').addEventListener('input', function() {
+            const value = parseFloat(this.value);
+            document.querySelector('#targetAmount').parentElement.querySelector('.value-display').textContent = 
+                formatCurrency(value);
+            window.targetAmount = value;
+            updateChart();
+        });
     </script>
 </body>
 </html> 
