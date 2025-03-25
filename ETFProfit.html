@@ -788,6 +788,173 @@
         .scenario-controls .control-group:last-child {
             border-left: 4px solid #16a34a;
         }
+
+        /* Mobile-spezifische Anpassungen */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+                margin: 0;
+                -webkit-text-size-adjust: 100%;
+            }
+            
+            .container {
+                padding: 1rem;
+                border-radius: 0;
+                box-shadow: none;
+                margin: 0;
+            }
+            
+            .controls {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+                padding: 0.75rem;
+                margin: 0;
+            }
+            
+            .control-group {
+                width: 100%;
+                margin: 0;
+                padding: 0.75rem;
+            }
+            
+            /* Verbesserte Slider für Touch-Geräte */
+            input[type="range"] {
+                -webkit-appearance: none;
+                width: 100%;
+                height: 8px;
+                border-radius: 4px;
+                background: #e2e8f0;
+                margin: 0.5rem 0;
+            }
+            
+            input[type="range"]::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                width: 24px;
+                height: 24px;
+                background: var(--primary-color);
+                border-radius: 50%;
+                cursor: pointer;
+                border: none;
+            }
+            
+            /* Verbesserte Toggle-Container */
+            .toggle-container {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                margin: 1rem 0;
+                padding: 0 0.75rem;
+            }
+            
+            .toggle-button {
+                flex: 1 1 auto;
+                min-width: calc(33.33% - 0.5rem);
+                padding: 0.75rem 0.5rem;
+                font-size: 0.875rem;
+                white-space: normal;
+                text-align: center;
+                height: auto;
+            }
+            
+            /* Chart-Anpassungen */
+            #wealthChart {
+                height: 300px !important;
+                margin: 1rem 0;
+                padding: 0.75rem;
+            }
+            
+            /* Summary Cards */
+            .summary {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+                padding: 0.75rem;
+                margin: 0.5rem 0;
+            }
+            
+            .summary-card {
+                padding: 0.75rem;
+            }
+            
+            .summary-value {
+                font-size: 1rem;
+                line-height: 1.2;
+            }
+            
+            .summary-label {
+                font-size: 0.75rem;
+            }
+            
+            /* Feature Panels */
+            .feature-panel {
+                padding: 0.75rem;
+                margin: 0.5rem 0;
+            }
+            
+            .feature-panel h3 {
+                font-size: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            /* Info Boxes */
+            .info-boxes {
+                padding: 0.75rem;
+                gap: 0.75rem;
+            }
+            
+            .info-box {
+                padding: 0.75rem;
+                margin: 0;
+            }
+            
+            /* Tooltips für Touch-Geräte */
+            .tooltip .tooltip-text {
+                width: calc(100vw - 3rem);
+                max-width: 280px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+
+        /* Extra kleine Bildschirme */
+        @media (max-width: 480px) {
+            .summary {
+                grid-template-columns: 1fr;
+            }
+            
+            .toggle-button {
+                min-width: 100%;
+            }
+            
+            .control-group label {
+                font-size: 0.875rem;
+            }
+            
+            .value-display {
+                font-size: 0.875rem;
+            }
+            
+            h1 {
+                font-size: 1.25rem;
+                margin: 0.5rem 0 1rem 0;
+                padding: 0 0.5rem;
+            }
+        }
+
+        /* Landscape-Modus */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .controls {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+            }
+            
+            #wealthChart {
+                height: 200px !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -821,9 +988,9 @@
             <div class="control-group">
                 <label for="currentAge">
                     Aktuelles Alter
-                    <span class="value-display">30 Jahre</span>
+                    <span class="value-display">18 Jahre</span>
                 </label>
-                <input type="range" id="currentAge" min="18" max="80" step="1" value="30">
+                <input type="range" id="currentAge" min="0" max="80" step="1" value="18">
             </div>
             <div class="control-group">
                 <label for="initialInvestment">
@@ -1267,7 +1434,7 @@
             
             // Update display values
             document.querySelector('#currentAge').parentElement.querySelector('.value-display').textContent = 
-                `${currentAge} Jahre`;
+                currentAge === 0 ? 'Geburt' : `${currentAge} Jahre`;
             document.querySelector('#initialInvestment').parentElement.querySelector('.value-display').textContent = 
                 formatCurrency(initialInvestment);
             document.querySelector('#monthlyInvestment').parentElement.querySelector('.value-display').textContent = 
@@ -1669,6 +1836,11 @@
         }
 
         window.addEventListener('load', () => {
+            // Setze das Standardalter auf 18
+            const currentAgeInput = document.getElementById('currentAge');
+            currentAgeInput.value = 18;
+            currentAgeInput.parentElement.querySelector('.value-display').textContent = '18 Jahre';
+            
             // Verstecke initial das Zielvermögen-Feld
             document.getElementById('targetAmount').parentElement.style.display = 'none';
             
@@ -2075,6 +2247,16 @@
             window.targetAmount = value;
             updateChart();
         });
+
+        // Event-Listener für den Altersregler
+        document.getElementById('currentAge').addEventListener('input', function() {
+            const value = parseInt(this.value);
+            const displayElement = this.parentElement.querySelector('.value-display');
+            displayElement.textContent = value === 0 ? 'Geburt' : `${value} Jahre`;
+            updateChart();
+        });
+
+        // Anpassung der Regler-Eigenschaften im HTML
     </script>
 </body>
 </html> 
