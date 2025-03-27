@@ -379,6 +379,582 @@
             height: 100%;
             transition: width 0.3s ease;
         }
+
+        /* Feature Panels und Toggle-Buttons */
+        .toggle-container {
+            display: flex;
+            margin: 1.5rem 0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .toggle-button {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: #f1f5f9;
+            border: none;
+            color: #64748b;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-button.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .feature-panel {
+            display: none;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .feature-panel.active {
+            display: block;
+        }
+
+        .feature-panel h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .toggle-label {
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        /* ETF-Typ Auswahl */
+        .etf-type-selector {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .etf-type-selector label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        /* Szenario-spezifische Stile */
+        .scenario-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Tax Comparison Card */
+        .tax-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .tax-card {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .tax-card-title {
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .tax-card-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .tax-card-label {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        /* Neue optimierte Info-Icon Styles */
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            background: #e2e8f0;
+            color: #3D6BC7;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 8px;
+            cursor: help;
+            transition: all 0.2s ease;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .info-icon:hover {
+            background: #3D6BC7;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 280px;
+            background-color: #1e293b;
+            color: white;
+            text-align: left;
+            border-radius: 8px;
+            padding: 12px;
+            position: absolute;
+            z-index: 100;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            font-weight: normal;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -6px;
+            border-width: 6px;
+            border-style: solid;
+            border-color: #1e293b transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(-8px);
+        }
+
+        .insights-container {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow);
+        }
+        
+        .insights-container h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .insight-item {
+            display: flex;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .insight-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .insight-icon {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .insight-icon.positive { background-color: #10b981; }
+        .insight-icon.neutral { background-color: #3b82f6; }
+        .insight-icon.warning { background-color: #f59e0b; }
+        
+        .insight-content {
+            flex-grow: 1;
+        }
+        
+        .insight-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .insight-description {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        /* Responsive Anpassungen */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .summary {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .summary-card {
+                padding: 1rem;
+            }
+            
+            .summary-value {
+                font-size: 1.2rem;
+            }
+            
+            .controls {
+                padding: 1rem;
+                gap: 1rem;
+            }
+            
+            #wealthChart {
+                margin: 1.5rem 0;
+                padding: 1rem;
+            }
+            
+            .toggle-container {
+                flex-direction: column;
+                border-radius: 0;
+                overflow: visible;
+                box-shadow: none;
+            }
+            
+            .toggle-button {
+                border-radius: var(--border-radius);
+                margin-bottom: 0.5rem;
+                box-shadow: var(--shadow);
+            }
+            
+            .info-boxes {
+                grid-template-columns: 1fr;
+            }
+            
+            .tax-comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-panel {
+                padding: 1rem;
+            }
+            
+            .scenario-controls {
+                grid-template-columns: 1fr;
+            }
+            
+            /* Anpassung des Chart-Aspektverhältnisses für mobile Geräte */
+            #wealthChart {
+                aspect-ratio: 1.2;
+            }
+        }
+        
+        /* Extra kleine Bildschirme */
+        @media (max-width: 480px) {
+            .summary {
+                grid-template-columns: 1fr;
+            }
+            
+            .control-group label {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .value-display {
+                margin-top: 0.25rem;
+            }
+            
+            .insight-item {
+                flex-direction: column;
+            }
+            
+            .insight-icon {
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        /* Neue Stile für verbesserte Szenario-Controls */
+        .rate-info {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 0.3rem;
+        }
+        
+        .scenario-controls .control-group {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+        }
+        
+        /* Unterschiedliche Farben für die Szenarien */
+        .scenario-controls .control-group:first-child {
+            border-left: 4px solid #f43f5e;
+        }
+        
+        .scenario-controls .control-group:last-child {
+            border-left: 4px solid #16a34a;
+        }
+
+        /* Mobile-spezifische Anpassungen */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+                margin: 0;
+                -webkit-text-size-adjust: 100%;
+            }
+            
+            .container {
+                padding: 1rem;
+                border-radius: 0;
+                box-shadow: none;
+                margin: 0;
+            }
+            
+            .controls {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+                padding: 0.75rem;
+                margin: 0;
+            }
+            
+            .control-group {
+                width: 100%;
+                margin: 0;
+                padding: 0.75rem;
+            }
+            
+            /* Verbesserte Slider für Touch-Geräte */
+            input[type="range"] {
+                -webkit-appearance: none;
+                width: 100%;
+                height: 8px;
+                border-radius: 4px;
+                background: #e2e8f0;
+                margin: 0.5rem 0;
+            }
+            
+            input[type="range"]::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                width: 24px;
+                height: 24px;
+                background: var(--primary-color);
+                border-radius: 50%;
+                cursor: pointer;
+                border: none;
+            }
+            
+            /* Verbesserte Toggle-Container */
+            .toggle-container {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                margin: 1rem 0;
+                padding: 0 0.75rem;
+            }
+            
+            .toggle-button {
+                flex: 1 1 auto;
+                min-width: calc(33.33% - 0.5rem);
+                padding: 0.75rem 0.5rem;
+                font-size: 0.875rem;
+                white-space: normal;
+                text-align: center;
+                height: auto;
+            }
+            
+            /* Chart-Anpassungen */
+            #wealthChart {
+                height: 300px !important;
+                margin: 1rem 0;
+                padding: 0.75rem;
+            }
+            
+            /* Summary Cards */
+            .summary {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+                padding: 0.75rem;
+                margin: 0.5rem 0;
+            }
+            
+            .summary-card {
+                padding: 0.75rem;
+            }
+            
+            .summary-value {
+                font-size: 1rem;
+                line-height: 1.2;
+            }
+            
+            .summary-label {
+                font-size: 0.75rem;
+            }
+            
+            /* Feature Panels */
+            .feature-panel {
+                padding: 0.75rem;
+                margin: 0.5rem 0;
+            }
+            
+            .feature-panel h3 {
+                font-size: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            /* Info Boxes */
+            .info-boxes {
+                padding: 0.75rem;
+                gap: 0.75rem;
+            }
+            
+            .info-box {
+                padding: 0.75rem;
+                margin: 0;
+            }
+            
+            /* Tooltips für Touch-Geräte */
+            .tooltip .tooltip-text {
+                width: calc(100vw - 3rem);
+                max-width: 280px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+
+        /* Extra kleine Bildschirme */
+        @media (max-width: 480px) {
+            .summary {
+                grid-template-columns: 1fr;
+            }
+            
+            .toggle-button {
+                min-width: 100%;
+            }
+            
+            .control-group label {
+                font-size: 0.875rem;
+            }
+            
+            .value-display {
+                font-size: 0.875rem;
+            }
+            
+            h1 {
+                font-size: 1.25rem;
+                margin: 0.5rem 0 1rem 0;
+                padding: 0 0.5rem;
+            }
+        }
+
+        /* Landscape-Modus */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .controls {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+            }
+            
+            #wealthChart {
+                height: 200px !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -412,9 +988,9 @@
             <div class="control-group">
                 <label for="currentAge">
                     Aktuelles Alter
-                    <span class="value-display">30 Jahre</span>
+                    <span class="value-display">18 Jahre</span>
                 </label>
-                <input type="range" id="currentAge" min="18" max="80" step="1" value="30">
+                <input type="range" id="currentAge" min="0" max="80" step="1" value="18">
             </div>
             <div class="control-group">
                 <label for="initialInvestment">
@@ -433,6 +1009,10 @@
             <div class="control-group">
                 <label for="interestRate">
                     Jährlicher Zinssatz
+                    <span class="tooltip">
+                        <span class="info-icon">i</span>
+                        <span class="tooltip-text">Der durchschnittliche jährliche Ertrag Ihrer Anlage. Historisch liegt die langfristige Rendite von globalen Aktien-ETFs bei ca. 7-8% vor Inflation. Anleihen liegen typischerweise bei 2-4%.</span>
+                    </span>
                     <span class="value-display">6.0 %</span>
                 </label>
                 <input type="range" id="interestRate" min="0" max="15" step="0.1" value="6">
@@ -445,13 +1025,6 @@
                 <input type="range" id="investmentPeriod" min="1" max="50" step="1" value="11">
             </div>
             <div class="control-group">
-                <label for="totalPeriod">
-                    Gesamtlaufzeit
-                    <span class="value-display">40 Jahre</span>
-                </label>
-                <input type="range" id="totalPeriod" min="1" max="50" step="1" value="40">
-            </div>
-            <div class="control-group">
                 <label for="targetAmount">
                     Zielvermögen
                     <span class="value-display">100.000 €</span>
@@ -461,6 +1034,10 @@
             <div class="control-group">
                 <label for="retirementAge">
                     Gewünschtes Rentenalter
+                    <span class="tooltip">
+                        <span class="info-icon">i</span>
+                        <span class="tooltip-text">Das Alter, in dem Sie finanziell unabhängig sein möchten. Die Berechnung zeigt, ob Sie dieses Ziel mit Ihren aktuellen Sparraten erreichen können.</span>
+                    </span>
                     <span class="value-display">65 Jahre</span>
                 </label>
                 <input type="range" id="retirementAge" min="30" max="80" step="1" value="65">
@@ -468,14 +1045,107 @@
             <div class="control-group">
                 <label for="monthlyRetirementIncome">
                     Gewünschtes monatliches Renteneinkommen
+                    <span class="tooltip">
+                        <span class="info-icon">i</span>
+                        <span class="tooltip-text">Der monatliche Betrag, den Sie im Ruhestand entnehmen möchten. Das erforderliche Kapital wird basierend auf einer sicheren Entnahmerate berechnet.</span>
+                    </span>
                     <span class="value-display">2.000 €</span>
                 </label>
                 <input type="range" id="monthlyRetirementIncome" min="500" max="10000" step="100" value="2000">
             </div>
         </div>
 
+        <div class="toggle-container">
+            <button id="scenarioToggle" class="toggle-button">Szenario-Vergleich</button>
+            <button id="inflationToggle" class="toggle-button">Inflationsrechner</button>
+            <button id="taxToggle" class="toggle-button">Steueroptimierung</button>
+        </div>
+
+        <!-- Verbesserte Szenario-Vergleich Panel -->
+        <div id="scenarioPanel" class="feature-panel">
+            <h3>Rendite-Szenarien 
+                <span class="tooltip">
+                    <span class="info-icon">i</span>
+                    <span class="tooltip-text">Hier können Sie verschiedene Rendite-Szenarien vergleichen. Der Basisszenario entspricht Ihrem gewählten Zinssatz, während die pessimistischen und optimistischen Szenarien abweichende Renditen darstellen.</span>
+                </span>
+            </h3>
+            <div class="scenario-controls">
+                <div class="control-group">
+                    <label for="pessimisticRate">
+                        Pessimistisches Szenario 
+                        <span class="value-display"><span id="pessimisticRateValue">4.0</span> %</span>
+                    </label>
+                    <input type="range" id="pessimisticRate" min="0" max="5" step="0.1" value="2">
+                    <div class="rate-info">Basis-Zinssatz minus <span id="pessimisticDiff">2.0</span>%</div>
+                </div>
+                <div class="control-group">
+                    <label for="optimisticRate">
+                        Optimistisches Szenario
+                        <span class="value-display"><span id="optimisticRateValue">8.0</span> %</span>
+                    </label>
+                    <input type="range" id="optimisticRate" min="0" max="5" step="0.1" value="2">
+                    <div class="rate-info">Basis-Zinssatz plus <span id="optimisticDiff">2.0</span>%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inflationsrechner Panel -->
+        <div id="inflationPanel" class="feature-panel">
+            <h3>Inflationsberücksichtigung</h3>
+            <div class="control-group">
+                <label for="inflationRate">
+                    Durchschnittliche Inflationsrate
+                    <span class="value-display"><span id="inflationRateValue">2.0</span> %</span>
+                </label>
+                <input type="range" id="inflationRate" min="0" max="10" step="0.1" value="2">
+            </div>
+            <div class="toggle-switch">
+                <label class="switch">
+                    <input type="checkbox" id="showRealValues">
+                    <span class="slider round"></span>
+                </label>
+                <span class="toggle-label">Inflationsbereinigte Werte anzeigen</span>
+            </div>
+        </div>
+
+        <!-- Steueroptimierung Panel -->
+        <div id="taxPanel" class="feature-panel">
+            <h3>Steueroptimierung
+                <span class="tooltip">
+                    <span class="info-icon">i</span>
+                    <span class="tooltip-text">In Deutschland werden Kapitalerträge mit der Abgeltungssteuer (25% plus Solidaritätszuschlag) besteuert. Bei thesaurierenden ETFs fällt die Steuer erst beim Verkauf an, während ausschüttende ETFs jährlich steuerpflichtige Dividenden generieren.</span>
+                </span>
+            </h3>
+            <div class="control-group">
+                <label for="taxRate">
+                    Abgeltungssteuer (inkl. Soli)
+                    <span class="value-display"><span id="taxRateValue">26.375</span> %</span>
+                </label>
+                <input type="range" id="taxRate" min="0" max="30" step="0.125" value="26.375">
+            </div>
+            <div class="control-group">
+                <label for="taxAllowance">
+                    Jährlicher Freibetrag
+                    <span class="value-display"><span id="taxAllowanceValue">1000</span> €</span>
+                </label>
+                <input type="range" id="taxAllowance" min="0" max="2000" step="50" value="1000">
+            </div>
+            <div class="toggle-switch">
+                <label class="switch">
+                    <input type="checkbox" id="showTaxEffect">
+                    <span class="slider round"></span>
+                </label>
+                <span class="toggle-label">Steuereffekt anzeigen</span>
+            </div>
+            <div class="etf-type-selector">
+                <label><input type="radio" name="etfType" value="accumulating" checked> Thesaurierend</label>
+                <label><input type="radio" name="etfType" value="distributing"> Ausschüttend</label>
+            </div>
+        </div>
+
         <div class="button-group">
             <button onclick="resetInputs()">Zurücksetzen</button>
+            <button id="modeToggle" onclick="toggleCalculationMode()" class="secondary">Zu FIRE-Rechner wechseln</button>
         </div>
 
         <div class="rules-container">
@@ -489,7 +1159,12 @@
                 
                 <div class="info-box rule-115">
                     <div class="info-content">
-                        <h3>115-Regel</h3>
+                        <h3>115-Regel
+                            <span class="tooltip">
+                                <span class="info-icon">i</span>
+                                <span class="tooltip-text">Diese Faustformel besagt, dass der prozentuale Anteil an Aktien in Ihrem Portfolio 115 minus Ihr Alter betragen sollte. Je jünger Sie sind, desto mehr Risiko können Sie eingehen.</span>
+                            </span>
+                        </h3>
                         <p>Empfohlener Aktienanteil: <span id="stockPercentage">65</span>% (115 - Ihr Alter: <span id="currentAgeDisplay">50</span>)</p>
                     </div>
                 </div>
@@ -519,13 +1194,24 @@
                 </div>
             </div>
         </div>
+
+        <!-- Neuer Insights-Bereich (nach der Zusammenfassung) -->
+        <div class="insights-container">
+            <h3>Wichtige Erkenntnisse</h3>
+            <div class="insights-list" id="insightsList">
+                <!-- Wird dynamisch befüllt -->
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
     <script>
         let chart;
-        let isFireMode = false;
+        let isFireMode = true;  // Bleibt true als Standard
+        let isShowingRealValues = false;
+        let isShowingTaxEffect = false;
+        let etfType = 'accumulating';
 
         function formatCurrency(value) {
             return new Intl.NumberFormat('de-DE', {
@@ -550,60 +1236,165 @@
                 button.textContent = 'Zu FIRE-Rechner wechseln';
                 targetControls.style.display = 'flex';
                 retirementControls.forEach(control => control.parentElement.style.display = 'none');
+                
+                // Setze einen sinnvollen Standardwert für das Zielvermögen
+                const targetAmount = document.getElementById('targetAmount');
+                if (isNaN(parseFloat(targetAmount.value)) || parseFloat(targetAmount.value) === 0) {
+                    targetAmount.value = '500000';
+                }
+                // Aktualisiere die Anzeige des Zielvermögens
+                document.querySelector('#targetAmount').parentElement.querySelector('.value-display').textContent = 
+                    formatCurrency(parseFloat(targetAmount.value));
             }
+            
+            // Definiere targetAmount für die Chart-Aktualisierung
+            window.targetAmount = isFireMode ? 
+                calculateRequiredRetirementCapital(
+                    parseFloat(document.getElementById('monthlyRetirementIncome').value),
+                    parseFloat(document.getElementById('interestRate').value)
+                ) : 
+                parseFloat(document.getElementById('targetAmount').value);
+            
             updateChart();
         }
 
+        // Vollständig überarbeitete updateRetirementDisplayValues Funktion
+        function updateRetirementDisplayValues() {
+            const retirementAge = document.getElementById('retirementAge').value;
+            const monthlyRetirementIncome = document.getElementById('monthlyRetirementIncome').value;
+            
+            // Direkter Zugriff auf die DOM-Elemente
+            const retirementAgeDisplay = document.querySelector('#retirementAge').parentElement.querySelector('.value-display');
+            const monthlyRetirementIncomeDisplay = document.querySelector('#monthlyRetirementIncome').parentElement.querySelector('.value-display');
+            
+            // Werte setzen
+            retirementAgeDisplay.textContent = `${retirementAge} Jahre`;
+            monthlyRetirementIncomeDisplay.textContent = formatCurrency(monthlyRetirementIncome);
+        }
+
         function calculateRequiredRetirementCapital(monthlyIncome, interestRate) {
-            // Verwendung der 4%-Regel als Basis, angepasst an den tatsächlichen Zinssatz
-            const safeWithdrawalRate = interestRate / 100 / 1.5; // Conservative estimate
+            // Die 4%-Regel als Basis verwenden
+            let safeWithdrawalRate = 0.04;
+            
+            // Anpassung basierend auf dem tatsächlichen Zinssatz (konservativ)
+            if (interestRate > 6) {
+                safeWithdrawalRate = Math.min(0.05, interestRate / 100 * 0.7);
+            } else if (interestRate < 4) {
+                safeWithdrawalRate = Math.max(0.03, interestRate / 100 * 0.8);
+            }
+            
             const yearlyIncome = monthlyIncome * 12;
             return yearlyIncome / safeWithdrawalRate;
         }
 
-        function calculateWealth(monthlyInvestment, interestRate, investmentPeriod, totalPeriod, initialInvestment) {
-            const yearlyInvestment = monthlyInvestment * 12;
+        // Vollständige Überarbeitung der calculateWealthExtended-Funktion
+        function calculateWealthExtended(monthlyInvestment, interestRate, investmentPeriod, initialInvestment, options = {}) {
+            // Default-Optionen
+            const settings = {
+                inflationRate: 0,
+                applyTaxes: false,
+                taxRate: 0.26375,
+                taxAllowance: 1000,
+                etfType: 'accumulating',
+                ...options
+            };
+
             const currentAge = parseInt(document.getElementById('currentAge').value);
-            const retirementAge = parseInt(document.getElementById('retirementAge').value);
+            const retirementAge = isFireMode ? parseInt(document.getElementById('retirementAge').value) : 0;
+            const monthlyRetirementIncome = isFireMode ? parseFloat(document.getElementById('monthlyRetirementIncome').value) : 0;
+            const yearlyInvestment = monthlyInvestment * 12;
+            const yearlyRetirementWithdrawal = monthlyRetirementIncome * 12;
+            
+            const totalPeriod = 85 - currentAge;
+            
             const results = {
-                years: [],
+                ages: [],
                 investments: [],
                 gains: [],
-                continuedSavings: [],
+                realInvestments: [],
+                realGains: [],
+                afterTaxGains: [],
+                afterTaxTotal: [],
                 totalInvestment: initialInvestment,
                 totalGains: 0,
                 finalWealth: 0,
-                targetYear: null
+                taxPaid: 0,
+                afterTaxFinalWealth: 0
             };
-
+            
             let totalInvestment = initialInvestment;
             let totalWealth = initialInvestment;
-            let continuedSavingsTotal = initialInvestment;
-
-            for (let year = 1; year <= totalPeriod; year++) {
+            let inflationFactor = 1;
+            let cumulativeTaxPaid = 0;
+            
+            for (let year = 0; year < totalPeriod; year++) {
                 const currentYearAge = currentAge + year;
-                const isRetired = isFireMode && currentYearAge >= retirementAge;
-
-                if (!isRetired && year <= investmentPeriod) {
-                    totalInvestment += yearlyInvestment;
+                
+                // Inflationsfaktor aktualisieren
+                if (year > 0 && settings.inflationRate > 0) {
+                    inflationFactor *= (1 + settings.inflationRate / 100);
                 }
-
-                totalWealth = (totalWealth + (year <= investmentPeriod ? yearlyInvestment : 0)) 
-                    * (1 + interestRate / 100);
-
-                continuedSavingsTotal += yearlyInvestment;
-
-                results.years.push(year);
+                
+                // Zinsberechnung
+                const interestEarned = totalWealth * (interestRate / 100);
+                
+                // Steuerberechnung
+                let yearlyTaxPaid = 0;
+                if (settings.applyTaxes) {
+                    if (settings.etfType === 'distributing') {
+                        // Ausschüttende ETFs: Steuern auf jährliche Ausschüttungen
+                        const yearlyDividend = interestEarned * 0.7; // 70% Ausschüttungsquote
+                        const teilfreistellung = 0.3; // 30% für Aktienfonds
+                        const taxableGains = Math.max(0, (yearlyDividend * (1 - teilfreistellung)) - settings.taxAllowance);
+                        yearlyTaxPaid = taxableGains * settings.taxRate;
+                    } else {
+                        // Thesaurierende ETFs: Vorabpauschale
+                        const baseRate = Math.max(0, (interestRate * 0.7 - 1) / 100); // Vereinfachte Approximation
+                        const vorabpauschale = Math.min(
+                            totalWealth * baseRate,
+                            interestEarned * 0.7
+                        );
+                        if (vorabpauschale > settings.taxAllowance) {
+                            yearlyTaxPaid = (vorabpauschale - settings.taxAllowance) * settings.taxRate;
+                        }
+                    }
+                    cumulativeTaxPaid += yearlyTaxPaid;
+                    totalWealth -= yearlyTaxPaid;
+                }
+                
+                // Einzahlungen/Entnahmen
+                if (isFireMode && currentYearAge >= retirementAge) {
+                    totalWealth = totalWealth + interestEarned - yearlyRetirementWithdrawal;
+                } else if (year < investmentPeriod) {
+                    totalInvestment += yearlyInvestment;
+                    totalWealth = totalWealth + interestEarned + yearlyInvestment;
+                } else {
+                    totalWealth = totalWealth + interestEarned;
+                }
+                
+                totalWealth = Math.max(0, totalWealth);
+                
+                // Werte speichern
+                const yearGains = Math.max(0, totalWealth - totalInvestment);
+                results.ages.push(currentYearAge);
                 results.investments.push(totalInvestment);
-                results.gains.push(Math.max(0, totalWealth - totalInvestment));
-                results.continuedSavings.push(continuedSavingsTotal);
+                results.gains.push(yearGains);
+                results.realInvestments.push(totalInvestment / inflationFactor);
+                results.realGains.push(yearGains / inflationFactor);
+                results.afterTaxGains.push(yearGains - cumulativeTaxPaid);
+                results.afterTaxTotal.push(totalWealth);
             }
-
+            
+            // Endergebnisse
             results.totalInvestment = totalInvestment;
-            results.totalGains = totalWealth - totalInvestment;
+            results.totalGains = Math.max(0, totalWealth - totalInvestment);
             results.finalWealth = totalWealth;
-            results.returnRate = ((totalWealth / totalInvestment - 1) * 100);
-
+            results.taxPaid = cumulativeTaxPaid;
+            results.afterTaxFinalWealth = totalWealth;
+            results.realTotalInvestment = totalInvestment / inflationFactor;
+            results.realTotalGains = (totalWealth - totalInvestment) / inflationFactor;
+            results.realFinalWealth = totalWealth / inflationFactor;
+            
             return results;
         }
 
@@ -613,12 +1404,37 @@
             const monthlyInvestment = parseFloat(document.getElementById('monthlyInvestment').value);
             const interestRate = parseFloat(document.getElementById('interestRate').value);
             const investmentPeriod = parseInt(document.getElementById('investmentPeriod').value);
-            const totalPeriod = parseInt(document.getElementById('totalPeriod').value);
-            const targetAmount = parseFloat(document.getElementById('targetAmount').value);
-
+            
+            // Entferne totalPeriod aus den Parametern, da wir immer bis 85 rechnen
+            // const totalPeriod = parseInt(document.getElementById('totalPeriod').value);
+            
+            // FIRE-Modus-Parameter
+            const retirementAge = parseInt(document.getElementById('retirementAge').value);
+            const monthlyRetirementIncome = parseFloat(document.getElementById('monthlyRetirementIncome').value);
+            
+            // Berechnung des erforderlichen Kapitals für den FIRE-Modus
+            let effectiveTargetAmount = targetAmount;
+            if (isFireMode) {
+                effectiveTargetAmount = calculateRequiredRetirementCapital(monthlyRetirementIncome, interestRate);
+                // Aktualisiere die Anzeige für das effektive Zielvermögen
+                document.querySelector('#targetAmount').parentElement.querySelector('.value-display').textContent = 
+                    formatCurrency(effectiveTargetAmount);
+            }
+            
+            // Neue Parameter
+            const inflationRate = isShowingRealValues ? parseFloat(document.getElementById('inflationRate').value) : 0;
+            const taxRate = isShowingTaxEffect ? parseFloat(document.getElementById('taxRate').value) / 100 : 0;
+            const taxAllowance = parseFloat(document.getElementById('taxAllowance').value);
+            
+            // Pessimistisches und optimistisches Szenario
+            const pessimisticDiff = parseFloat(document.getElementById('pessimisticRate').value);
+            const optimisticDiff = parseFloat(document.getElementById('optimisticRate').value);
+            const pessimisticRate = Math.max(0, interestRate - pessimisticDiff);
+            const optimisticRate = interestRate + optimisticDiff;
+            
             // Update display values
             document.querySelector('#currentAge').parentElement.querySelector('.value-display').textContent = 
-                `${currentAge} Jahre`;
+                currentAge === 0 ? 'Geburt' : `${currentAge} Jahre`;
             document.querySelector('#initialInvestment').parentElement.querySelector('.value-display').textContent = 
                 formatCurrency(initialInvestment);
             document.querySelector('#monthlyInvestment').parentElement.querySelector('.value-display').textContent = 
@@ -627,54 +1443,235 @@
                 `${interestRate.toFixed(1)} %`;
             document.querySelector('#investmentPeriod').parentElement.querySelector('.value-display').textContent = 
                 `${investmentPeriod} Jahre`;
-            document.querySelector('#totalPeriod').parentElement.querySelector('.value-display').textContent = 
-                `${totalPeriod} Jahre`;
             document.querySelector('#targetAmount').parentElement.querySelector('.value-display').textContent = 
-                formatCurrency(targetAmount);
+                formatCurrency(effectiveTargetAmount);
 
             // Update 72er-Regel
             document.getElementById('currentRate').textContent = interestRate.toFixed(1);
             document.getElementById('doublingYears').textContent = Math.round(72 / interestRate);
 
-            const data = calculateWealth(monthlyInvestment, interestRate, investmentPeriod, totalPeriod, initialInvestment);
-
-            // Update summary values
-            document.getElementById('totalInvestment').textContent = formatCurrency(data.totalInvestment);
-            document.getElementById('totalGains').textContent = formatCurrency(data.totalGains);
-            document.getElementById('finalWealth').textContent = formatCurrency(data.finalWealth);
-            document.getElementById('returnRate').textContent = `${data.returnRate.toFixed(1)} %`;
-
-            // Update Meilensteine
-            updateMilestones(data.finalWealth);
-
+            // Szenario-Berechnungen
+            const baseOptions = {
+                inflationRate: inflationRate,
+                applyTaxes: isShowingTaxEffect,
+                taxRate: taxRate,
+                taxAllowance: taxAllowance,
+                etfType: etfType
+            };
+            
+            // Berechnung der verschiedenen Szenarien
+            const baseData = calculateWealthExtended(
+                monthlyInvestment, 
+                interestRate, 
+                investmentPeriod, 
+                initialInvestment,
+                baseOptions
+            );
+            
+            // Update summary values basierend auf aktiven Modi
+            if (isShowingRealValues) {
+                document.getElementById('totalInvestment').textContent = formatCurrency(baseData.realTotalInvestment);
+                document.getElementById('totalGains').textContent = formatCurrency(baseData.realTotalGains);
+                document.getElementById('finalWealth').textContent = formatCurrency(baseData.realFinalWealth);
+            } else if (isShowingTaxEffect) {
+                document.getElementById('totalInvestment').textContent = formatCurrency(baseData.totalInvestment);
+                document.getElementById('totalGains').textContent = formatCurrency(baseData.totalGains - baseData.taxPaid);
+                document.getElementById('finalWealth').textContent = formatCurrency(baseData.afterTaxFinalWealth);
+            } else {
+                document.getElementById('totalInvestment').textContent = formatCurrency(baseData.totalInvestment);
+                document.getElementById('totalGains').textContent = formatCurrency(baseData.totalGains);
+                document.getElementById('finalWealth').textContent = formatCurrency(baseData.finalWealth);
+            }
+            
+            // Berechne und zeige die Gesamtrendite
+            const totalReturn = ((baseData.finalWealth / baseData.totalInvestment) - 1) * 100;
+            document.getElementById('returnRate').textContent = `${totalReturn.toFixed(1)} %`;
+            
             // Update Asset Allocation
             updateAssetAllocation(currentAge);
-
+            
             if (chart) {
                 chart.destroy();
             }
+            
+            // Chart-Datensätze basierend auf aktiven Features
+            const datasets = [];
+            
+            // Prüfen, ob überhaupt ein Panel aktiv ist
+            const isAnyPanelActive = document.querySelector('.feature-panel.active') !== null;
+            const isScenarioPanelActive = document.getElementById('scenarioPanel').classList.contains('active');
 
-            const ctx = document.getElementById('wealthChart').getContext('2d');
-            chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: data.years,
-                    datasets: [{
-                        label: 'Weitersparen ohne Ruhestand',
-                        data: data.continuedSavings,
-                        backgroundColor: 'rgba(148, 163, 184, 0.7)',
-                        order: 3
-                    }, {
-                        label: 'Zinsgewinn',
-                        data: data.gains,
-                        backgroundColor: '#6F8A63',
-                        order: 2
-                    }, {
-                        label: 'Einzahlungen',
-                        data: data.investments,
+            // Wenn kein Panel aktiv ist oder wenn das Szenario-Panel nicht aktiv ist, standard Balkendiagramm verwenden
+            if (!isAnyPanelActive || !isScenarioPanelActive) {
+                // Grundlegende Darstellung (gestapeltes Balkendiagramm)
+                if (isShowingRealValues) {
+                    datasets.push({
+                        label: 'Einzahlungen (inflationsbereinigt)',
+                        data: baseData.realInvestments,
                         backgroundColor: '#3D6BC7',
                         order: 1
-                    }]
+                    });
+                    datasets.push({
+                        label: 'Zinsgewinn (inflationsbereinigt)',
+                        data: baseData.realGains,
+                        backgroundColor: '#6F8A63',
+                        order: 2
+                    });
+                } else if (isShowingTaxEffect) {
+                    // Steuereffekte als Balken anzeigen
+                    datasets.push({
+                        label: 'Einzahlungen',
+                        data: baseData.investments,
+                        backgroundColor: '#3D6BC7',
+                        order: 1
+                    });
+                    datasets.push({
+                        label: 'Zinsgewinn (nach Steuern)',
+                        data: baseData.afterTaxGains,
+                        backgroundColor: '#6F8A63',
+                        order: 2
+                    });
+                    datasets.push({
+                        label: 'Steuern',
+                        data: baseData.gains.map((gain, i) => gain - baseData.afterTaxGains[i]),
+                        backgroundColor: '#f43f5e',
+                        order: 3
+                    });
+                } else {
+                    datasets.push({
+                        label: 'Einzahlungen',
+                        data: baseData.investments,
+                        backgroundColor: '#3D6BC7',
+                        order: 1
+                    });
+                    datasets.push({
+                        label: 'Zinsgewinn',
+                        data: baseData.gains,
+                        backgroundColor: '#6F8A63',
+                        order: 2
+                    });
+                }
+            } else {
+                // Scenario-Comparison (Liniendiagramm)
+                let baseChartData;
+                let pessimisticChartData;
+                let optimisticChartData;
+                
+                if (isShowingRealValues) {
+                    baseChartData = baseData.realInvestments.map((inv, i) => inv + baseData.realGains[i]);
+                    pessimisticChartData = calculateWealthExtended(
+                        monthlyInvestment, 
+                        pessimisticRate, 
+                        investmentPeriod, 
+                        initialInvestment,
+                        baseOptions
+                    ).realInvestments.map((inv, i) => inv + calculateWealthExtended(
+                        monthlyInvestment, 
+                        pessimisticRate, 
+                        investmentPeriod, 
+                        initialInvestment,
+                        baseOptions
+                    ).realGains[i]);
+                    optimisticChartData = calculateWealthExtended(
+                        monthlyInvestment, 
+                        optimisticRate, 
+                        investmentPeriod, 
+                        initialInvestment,
+                        baseOptions
+                    ).realInvestments.map((inv, i) => inv + calculateWealthExtended(
+                        monthlyInvestment, 
+                        optimisticRate, 
+                        investmentPeriod, 
+                        initialInvestment,
+                        baseOptions
+                    ).realGains[i]);
+                } else {
+                    baseChartData = baseData.investments.map((inv, i) => inv + baseData.gains[i]);
+                    pessimisticChartData = calculateWealthExtended(
+                        monthlyInvestment, 
+                        pessimisticRate, 
+                        investmentPeriod, 
+                        initialInvestment,
+                        baseOptions
+                    ).investments.map((inv, i) => inv + calculateWealthExtended(
+                        monthlyInvestment, 
+                        pessimisticRate, 
+                        investmentPeriod, 
+                        initialInvestment,
+                        baseOptions
+                    ).gains[i]);
+                    optimisticChartData = calculateWealthExtended(
+                        monthlyInvestment, 
+                        optimisticRate, 
+                        investmentPeriod, 
+                        initialInvestment,
+                        baseOptions
+                    ).investments.map((inv, i) => inv + calculateWealthExtended(
+                        monthlyInvestment, 
+                        optimisticRate, 
+                        investmentPeriod, 
+                        initialInvestment,
+                        baseOptions
+                    ).gains[i]);
+                }
+                
+                datasets.push({
+                    label: `Pessimistisch (${pessimisticRate.toFixed(1)}%)`,
+                    data: pessimisticChartData,
+                    borderColor: '#f43f5e',
+                    backgroundColor: 'rgba(244, 63, 94, 0.1)',
+                    fill: false,
+                    borderWidth: 2,
+                    tension: 0.1,
+                    type: 'line',
+                    order: 4
+                });
+                
+                datasets.push({
+                    label: `Basis (${interestRate.toFixed(1)}%)`,
+                    data: baseChartData,
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    fill: false,
+                    borderWidth: 3,
+                    tension: 0.1,
+                    type: 'line',
+                    order: 3
+                });
+                
+                datasets.push({
+                    label: `Optimistisch (${optimisticRate.toFixed(1)}%)`,
+                    data: optimisticChartData,
+                    borderColor: '#16a34a',
+                    backgroundColor: 'rgba(22, 163, 74, 0.1)',
+                    fill: false,
+                    borderWidth: 2,
+                    tension: 0.1,
+                    type: 'line',
+                    order: 5
+                });
+                
+                // Einzahlungen als Referenz
+                datasets.push({
+                    label: 'Einzahlungen',
+                    data: isShowingRealValues ? baseData.realInvestments : baseData.investments,
+                    borderColor: '#94a3b8',
+                    backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                    fill: false,
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    tension: 0.1,
+                    type: 'line',
+                    order: 6
+                });
+            }
+            
+            const ctx = document.getElementById('wealthChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: isScenarioPanelActive ? 'line' : 'bar',
+                data: {
+                    labels: baseData.ages,  // Diese Labels sind jetzt die tatsächlichen Alterswerte
+                    datasets: datasets
                 },
                 options: {
                     responsive: true,
@@ -682,20 +1679,20 @@
                     aspectRatio: 2,
                     scales: {
                         x: {
-                            stacked: true,
+                            stacked: !isScenarioPanelActive,
                             grid: {
                                 display: false
                             },
                             title: {
                                 display: true,
-                                text: 'Jahre'
+                                text: 'Alter'
                             }
                         },
                         y: {
-                            stacked: true,
+                            stacked: !isScenarioPanelActive,
                             title: {
                                 display: true,
-                                text: 'Vermögen (€)'
+                                text: isShowingRealValues ? 'Vermögen (inflationsbereinigt €)' : 'Vermögen (€)'
                             },
                             ticks: {
                                 callback: value => formatCurrency(value)
@@ -712,16 +1709,37 @@
                             annotations: {
                                 targetLine: {
                                     type: 'line',
-                                    yMin: targetAmount,
-                                    yMax: targetAmount,
+                                    yMin: effectiveTargetAmount,
+                                    yMax: effectiveTargetAmount,
                                     borderColor: 'rgb(244, 63, 94)',
                                     borderWidth: 2,
                                     borderDash: [5, 5],
                                     label: {
                                         enabled: true,
-                                        content: `Zielvermögen: ${formatCurrency(targetAmount)}`,
+                                        content: isFireMode ? 
+                                            `Benötigtes FIRE-Kapital: ${formatCurrency(effectiveTargetAmount)}` : 
+                                            `Zielvermögen: ${formatCurrency(targetAmount)}`,
                                         position: 'end'
-                                    }
+                                    },
+                                    mode: 'horizontal',
+                                    scaleID: 'y',
+                                    value: effectiveTargetAmount
+                                },
+                                retirementLine: {
+                                    type: 'line',
+                                    xMin: retirementAge,
+                                    xMax: retirementAge,
+                                    borderColor: '#f59e0b',
+                                    borderWidth: 2,
+                                    borderDash: [5, 5],
+                                    label: {
+                                        backgroundColor: '#f59e0b',
+                                        content: 'Rentenalter',
+                                        display: true,
+                                        position: 'start'
+                                    },
+                                    mode: 'vertical',
+                                    scaleID: 'x'
                                 }
                             }
                         },
@@ -735,18 +1753,74 @@
                     }
                 }
             });
-
+            
             // Berechne und zeige die Zeit bis zum Zielvermögen
-            const yearsToTarget = data.years.findIndex(year => 
-                (data.investments[year] + data.gains[year]) >= targetAmount);
+            const yearsToTarget = baseData.ages.findIndex((age, index) => 
+                (baseData.investments[index] + baseData.gains[index]) >= effectiveTargetAmount);
             
             if (yearsToTarget !== -1) {
-                document.getElementById('targetYear').textContent = 
-                    `Zielvermögen wird in ${yearsToTarget + 1} Jahren erreicht`;
+                document.getElementById('targetYear').textContent = isFireMode ?
+                    `Finanziell unabhängig mit ${baseData.ages[yearsToTarget]} Jahren (${formatCurrency(monthlyRetirementIncome)}/Monat bei ${formatCurrency(baseData.finalWealth)} Endvermögen)` :
+                    `Zielvermögen wird mit ${baseData.ages[yearsToTarget]} Jahren erreicht`;
             } else {
-                document.getElementById('targetYear').textContent = 
+                const maxWealth = Math.max(...baseData.investments.map((inv, i) => inv + baseData.gains[i]));
+                document.getElementById('targetYear').textContent = isFireMode ?
+                    `Finanzielle Unabhängigkeit wird nicht erreicht. Maximales Vermögen: ${formatCurrency(maxWealth)} (benötigt: ${formatCurrency(effectiveTargetAmount)})` :
                     'Zielvermögen wird im betrachteten Zeitraum nicht erreicht';
             }
+            
+            // Wenn Steuer-Panel aktiv ist, zeige Steuervergleich
+            if (document.getElementById('taxPanel').classList.contains('active') && isShowingTaxEffect) {
+                // Berechnung für beide ETF-Typen
+                const accumulatingData = calculateWealthExtended(
+                    monthlyInvestment, 
+                    interestRate, 
+                    investmentPeriod, 
+                    initialInvestment,
+                    {
+                        inflationRate: inflationRate,
+                        applyTaxes: true,
+                        taxRate: taxRate,
+                        taxAllowance: taxAllowance,
+                        etfType: 'accumulating'
+                    }
+                );
+                
+                const distributingData = calculateWealthExtended(
+                    monthlyInvestment, 
+                    interestRate, 
+                    investmentPeriod, 
+                    initialInvestment,
+                    {
+                        inflationRate: inflationRate,
+                        applyTaxes: true,
+                        taxRate: taxRate,
+                        taxAllowance: taxAllowance,
+                        etfType: 'distributing'
+                    }
+                );
+                
+                // Tax comparison anzeigen (falls noch nicht vorhanden)
+                updateTaxComparison(accumulatingData, distributingData, baseData);
+            } else {
+                // Entferne Tax-Comparison wenn nicht aktiv
+                const taxComparisonEl = document.getElementById('taxComparison');
+                if (taxComparisonEl) {
+                    taxComparisonEl.remove();
+                }
+            }
+
+            // Insights generieren
+            generateInsights(baseData, {
+                currentAge: currentAge,
+                targetAmount: effectiveTargetAmount,
+                monthlyInvestment: monthlyInvestment,
+                interestRate: interestRate,
+                investmentPeriod: investmentPeriod,
+                initialInvestment: initialInvestment,
+                retirementAge: retirementAge,
+                monthlyRetirementIncome: monthlyRetirementIncome
+            });
         }
 
         function resetInputs() {
@@ -762,13 +1836,38 @@
         }
 
         window.addEventListener('load', () => {
+            // Setze das Standardalter auf 18
+            const currentAgeInput = document.getElementById('currentAge');
+            currentAgeInput.value = 18;
+            currentAgeInput.parentElement.querySelector('.value-display').textContent = '18 Jahre';
+            
+            // Verstecke initial das Zielvermögen-Feld
+            document.getElementById('targetAmount').parentElement.style.display = 'none';
+            
+            // Zeige die FIRE-bezogenen Felder
+            document.querySelectorAll('#retirementAge, #monthlyRetirementIncome').forEach(control => 
+                control.parentElement.style.display = 'flex'
+            );
+            
+            // Setze den korrekten Button-Text
+            document.getElementById('modeToggle').textContent = 'Zu Zielvermögen wechseln';
+            
+            // Rest der bestehenden load-Event-Handler Logik
             const params = new URLSearchParams(window.location.search);
             if (params.has('monthly')) {
                 document.getElementById('monthlyInvestment').value = params.get('monthly');
                 document.getElementById('interestRate').value = params.get('rate');
                 document.getElementById('investmentPeriod').value = params.get('period');
-                document.getElementById('totalPeriod').value = params.get('total');
             }
+            
+            // Initialize controls
+            setupToggleButtons();
+            setupScenarioControls();
+            setupInflationControls();
+            setupTaxControls();
+            
+            updateRetirementDisplayValues();
+            
             updateChart();
         });
 
@@ -776,9 +1875,9 @@
             input.addEventListener('input', updateChart);
         });
 
-        // Initial setup
+        // Initial setup - FIRE Mode als Standard
         document.querySelectorAll('#retirementAge, #monthlyRetirementIncome').forEach(control => 
-            control.parentElement.style.display = 'none'
+            control.parentElement.style.display = 'flex'
         );
 
         function updateAssetAllocation(age) {
@@ -815,6 +1914,349 @@
                 }
             });
         }
+
+        function setupToggleButtons() {
+            const panels = {
+                'scenarioToggle': 'scenarioPanel',
+                'inflationToggle': 'inflationPanel',
+                'taxToggle': 'taxPanel'
+            };
+            
+            Object.keys(panels).forEach(toggleId => {
+                document.getElementById(toggleId).addEventListener('click', () => {
+                    // Update toggle buttons
+                    document.querySelectorAll('.toggle-button').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    document.getElementById(toggleId).classList.add('active');
+                    
+                    // Update panels
+                    document.querySelectorAll('.feature-panel').forEach(panel => {
+                        panel.classList.remove('active');
+                    });
+                    document.getElementById(panels[toggleId]).classList.add('active');
+                    
+                    updateChart();
+                });
+            });
+        }
+
+        function setupScenarioControls() {
+            // Scenario controls
+            document.getElementById('pessimisticRate').addEventListener('input', function() {
+                const diff = parseFloat(this.value);
+                const baseRate = parseFloat(document.getElementById('interestRate').value);
+                const pessimisticRate = Math.max(0, baseRate - diff);
+                
+                document.getElementById('pessimisticDiff').textContent = diff.toFixed(1);
+                document.getElementById('pessimisticRateValue').textContent = pessimisticRate.toFixed(1);
+                
+                updateChart();
+            });
+            
+            document.getElementById('optimisticRate').addEventListener('input', function() {
+                const diff = parseFloat(this.value);
+                const baseRate = parseFloat(document.getElementById('interestRate').value);
+                const optimisticRate = baseRate + diff;
+                
+                document.getElementById('optimisticDiff').textContent = diff.toFixed(1);
+                document.getElementById('optimisticRateValue').textContent = optimisticRate.toFixed(1);
+                
+                updateChart();
+            });
+        }
+
+        function setupInflationControls() {
+            // Inflation controls
+            document.getElementById('inflationRate').addEventListener('input', function() {
+                const inflationRate = parseFloat(this.value);
+                document.getElementById('inflationRateValue').textContent = inflationRate.toFixed(1);
+                updateChart();
+            });
+            
+            document.getElementById('showRealValues').addEventListener('change', function() {
+                isShowingRealValues = this.checked;
+                updateChart();
+            });
+        }
+
+        function setupTaxControls() {
+            // Tax controls
+            document.getElementById('taxRate').addEventListener('input', function() {
+                const taxRate = parseFloat(this.value);
+                document.getElementById('taxRateValue').textContent = taxRate.toFixed(3);
+                updateChart();
+            });
+            
+            document.getElementById('taxAllowance').addEventListener('input', function() {
+                const taxAllowance = parseFloat(this.value);
+                document.getElementById('taxAllowanceValue').textContent = taxAllowance;
+                updateChart();
+            });
+            
+            document.getElementById('showTaxEffect').addEventListener('change', function() {
+                isShowingTaxEffect = this.checked;
+                if (isShowingTaxEffect) {
+                    // Deaktiviere Inflationsanzeige wenn Steuereffekt aktiviert wird
+                    document.getElementById('showRealValues').checked = false;
+                    isShowingRealValues = false;
+                }
+                updateChart();
+            });
+            
+            document.querySelectorAll('input[name="etfType"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    etfType = this.value;
+                    updateChart();
+                });
+            });
+        }
+
+        // Funktion zur Generierung dynamischer Insights
+        function generateInsights(data, inputs) {
+            const insightsList = document.getElementById('insightsList');
+            insightsList.innerHTML = '';
+            
+            const insights = [];
+            const currentAge = inputs.currentAge;
+            const targetAmount = inputs.targetAmount;
+            const monthlyInvestment = inputs.monthlyInvestment;
+            const interestRate = inputs.interestRate;
+            
+            // Insight 1: Zeit bis zum Zielvermögen
+            const yearsToTarget = data.ages.findIndex((age, index) => 
+                (data.investments[index] + data.gains[index]) >= targetAmount) - data.ages.indexOf(currentAge);
+            
+            if (yearsToTarget > 0) {
+                const targetAge = currentAge + yearsToTarget;
+                insights.push({
+                    type: 'positive',
+                    icon: '✓',
+                    title: `Zielvermögen mit ${targetAge} Jahren erreicht`,
+                    description: `Bei Ihrer aktuellen Sparrate von ${formatCurrency(monthlyInvestment)}/Monat erreichen Sie Ihr Zielvermögen von ${formatCurrency(targetAmount)} in ${yearsToTarget} Jahren.`
+                });
+            } else {
+                insights.push({
+                    type: 'warning',
+                    icon: '!',
+                    title: 'Zielvermögen wird nicht erreicht',
+                    description: 'Mit Ihrer aktuellen Sparrate erreichen Sie Ihr Zielvermögen nicht im betrachteten Zeitraum. Erhöhen Sie Ihre monatliche Einzahlung oder den Anlagezeitraum.'
+                });
+            }
+            
+            // Insight 2: Zinseszins-Effekt
+            const totalInvestment = data.totalInvestment;
+            const finalWealth = data.finalWealth;
+            const zinseszinsAnteil = Math.round((finalWealth - totalInvestment) / finalWealth * 100);
+            
+            insights.push({
+                type: 'neutral',
+                icon: '💡',
+                title: 'Zinseszins-Effekt',
+                description: `Etwa ${zinseszinsAnteil}% Ihres Endvermögens (${formatCurrency(finalWealth - totalInvestment)}) werden durch Zinseszins generiert, nicht durch Einzahlungen.`
+            });
+            
+            // Insight 3: Optimierungspotenzial
+            const increasedMonthly = monthlyInvestment + 100;
+            const baseResult = calculateWealthExtended(monthlyInvestment, interestRate, inputs.investmentPeriod, inputs.initialInvestment);
+            const increasedResult = calculateWealthExtended(increasedMonthly, interestRate, inputs.investmentPeriod, inputs.initialInvestment);
+            const additionalWealth = increasedResult.finalWealth - baseResult.finalWealth;
+            
+            insights.push({
+                type: 'positive',
+                icon: '↑',
+                title: 'Optimierungspotenzial',
+                description: `Eine Erhöhung Ihrer monatlichen Einzahlung um nur 100€ würde Ihr Endvermögen um ${formatCurrency(additionalWealth)} steigern.`
+            });
+            
+            // Insight 4: Altersvorsorge
+            if (currentAge < 40) {
+                const retirementAmount = finalWealth;
+                const monthlyRetirementIncome = (retirementAmount * (interestRate / 100 / 12) * 0.7).toFixed(0);
+                
+                insights.push({
+                    type: 'neutral',
+                    icon: '🏖️',
+                    title: 'Ruhestandsperspektive',
+                    description: `Mit dem prognostizierten Endvermögen könnten Sie eine monatliche Entnahme von ca. ${formatCurrency(monthlyRetirementIncome)} erreichen, ohne das Kapital anzugreifen.`
+                });
+            }
+            
+            // Wenn im FIRE-Modus, spezielle FIRE-Insights hinzufügen
+            if (isFireMode) {
+                const requiredCapital = calculateRequiredRetirementCapital(inputs.monthlyRetirementIncome, inputs.interestRate);
+                
+                const yearsToFIRE = data.ages.findIndex((age, index) => 
+                    (data.investments[index] + data.gains[index]) >= requiredCapital) - data.ages.indexOf(inputs.currentAge);
+                
+                if (yearsToFIRE > 0) {
+                    const fireAge = inputs.currentAge + yearsToFIRE;
+                    insights.push({
+                        type: 'positive',
+                        icon: '🔥',
+                        title: `FIRE mit ${fireAge} Jahren möglich`,
+                        description: `Mit Ihrer aktuellen Sparrate können Sie nach ${yearsToFIRE} Jahren in den Ruhestand gehen und monatlich ${formatCurrency(inputs.monthlyRetirementIncome)} entnehmen.`
+                    });
+                    
+                    if (fireAge < inputs.retirementAge) {
+                        insights.push({
+                            type: 'positive',
+                            icon: '🎯',
+                            title: `${inputs.retirementAge - fireAge} Jahre früher in Rente`,
+                            description: `Sie können ${inputs.retirementAge - fireAge} Jahre vor Ihrem Zielrentenalter (${inputs.retirementAge}) finanziell unabhängig sein.`
+                        });
+                    }
+                } else {
+                    insights.push({
+                        type: 'warning',
+                        icon: '⚠️',
+                        title: 'FIRE-Ziel wird nicht erreicht',
+                        description: `Um monatlich ${formatCurrency(inputs.monthlyRetirementIncome)} entnehmen zu können, benötigen Sie ca. ${formatCurrency(requiredCapital)}. Erhöhen Sie Ihre Sparrate oder senken Sie Ihre Rentenerwartungen.`
+                    });
+                }
+            }
+            
+            // Insights rendern
+            insights.forEach(insight => {
+                const insightElement = document.createElement('div');
+                insightElement.className = 'insight-item';
+                insightElement.innerHTML = `
+                    <div class="insight-icon ${insight.type}">${insight.icon}</div>
+                    <div class="insight-content">
+                        <div class="insight-title">${insight.title}</div>
+                        <div class="insight-description">${insight.description}</div>
+                    </div>
+                `;
+                insightsList.appendChild(insightElement);
+            });
+        }
+        
+        // Hilfsfunktion zur Berechnung des potenziellen Gewinns mit höherer Sparrate
+        function calculatePotentialGain(monthlyInvestment, interestRate, investmentPeriod, totalPeriod, initialInvestment) {
+            const yearlyInvestment = monthlyInvestment * 12;
+            let totalInvestment = initialInvestment;
+            let totalWealth = initialInvestment;
+            
+            for (let year = 0; year < totalPeriod; year++) {
+                if (year < investmentPeriod) {
+                    totalInvestment += yearlyInvestment;
+                }
+                
+                totalWealth = (totalWealth + (year < investmentPeriod ? yearlyInvestment : 0)) 
+                            * (1 + interestRate / 100);
+            }
+            
+            return totalWealth;
+        }
+
+        // Zusatz: Chart-Anpassung für mobile Ansicht
+        function updateChartResponsive() {
+            const isMobile = window.innerWidth <= 768;
+            
+            if (chart) {
+                chart.options.maintainAspectRatio = true;
+                chart.options.aspectRatio = isMobile ? 1.2 : 2;
+                chart.update();
+            }
+        }
+        
+        // Event-Listener für Bildschirmgrößenänderungen hinzufügen
+        window.addEventListener('resize', updateChartResponsive);
+
+        // Event-Listener für die Rentenregler explizit hinzufügen
+        document.getElementById('retirementAge').addEventListener('input', function() {
+            const value = this.value;
+            document.querySelector('#retirementAge').parentElement.querySelector('.value-display').textContent = `${value} Jahre`;
+            if (isFireMode) {
+                updateChart();
+            }
+        });
+
+        document.getElementById('monthlyRetirementIncome').addEventListener('input', function() {
+            const value = this.value;
+            document.querySelector('#monthlyRetirementIncome').parentElement.querySelector('.value-display').textContent = formatCurrency(value);
+            if (isFireMode) {
+                updateChart();
+            }
+        });
+
+        // Anpassung der updateChart Funktion für den Steuerbereich
+        function updateTaxComparison(accumulatingData, distributingData, baseData) {
+            const taxComparisonEl = document.getElementById('taxComparison');
+            if (!taxComparisonEl) {
+                taxComparisonEl = document.createElement('div');
+                taxComparisonEl.id = 'taxComparison';
+                taxComparisonEl.className = 'tax-comparison';
+                document.getElementById('taxPanel').appendChild(taxComparisonEl);
+            }
+            
+            const interestRate = parseFloat(document.getElementById('interestRate').value);
+            const taxAllowance = parseFloat(document.getElementById('taxAllowance').value);
+            
+            taxComparisonEl.innerHTML = `
+                <div class="tax-card">
+                    <div class="tax-card-title">Thesaurierend</div>
+                    <div class="tax-card-value">${formatCurrency(accumulatingData.afterTaxFinalWealth)}</div>
+                    <div class="tax-card-label">Endvermögen nach Steuern</div>
+                    <div class="tax-card-value" style="margin-top: 1rem">
+                        ${formatCurrency(accumulatingData.totalGains - accumulatingData.taxPaid)}
+                    </div>
+                    <div class="tax-card-label">Nettogewinn</div>
+                    <div class="tax-card-value" style="margin-top: 0.5rem; font-size: 1rem;">
+                        ${formatCurrency(accumulatingData.taxPaid)}
+                    </div>
+                    <div class="tax-card-label">Gezahlte Steuern</div>
+                </div>
+                <div class="tax-card">
+                    <div class="tax-card-title">Ausschüttend</div>
+                    <div class="tax-card-value">${formatCurrency(distributingData.afterTaxFinalWealth)}</div>
+                    <div class="tax-card-label">Endvermögen nach Steuern</div>
+                    <div class="tax-card-value" style="margin-top: 1rem">
+                        ${formatCurrency(distributingData.totalGains - distributingData.taxPaid)}
+                    </div>
+                    <div class="tax-card-label">Nettogewinn</div>
+                    <div class="tax-card-value" style="margin-top: 0.5rem; font-size: 1rem;">
+                        ${formatCurrency(distributingData.taxPaid)}
+                    </div>
+                    <div class="tax-card-label">Gezahlte Steuern</div>
+                </div>
+                <div class="tax-card">
+                    <div class="tax-card-title">Vergleich</div>
+                    <div class="tax-card-value">
+                        ${formatCurrency(Math.abs(accumulatingData.afterTaxFinalWealth - distributingData.afterTaxFinalWealth))}
+                    </div>
+                    <div class="tax-card-label">Absoluter Unterschied</div>
+                    <div class="tax-card-value" style="margin-top: 1rem">
+                        ${(Math.abs(accumulatingData.afterTaxFinalWealth - distributingData.afterTaxFinalWealth) / 
+                           baseData.finalWealth * 100).toFixed(2)}%
+                    </div>
+                    <div class="tax-card-label">Relativer Unterschied</div>
+                    <div class="tax-info">
+                        <p>Thesaurierend: Steuerstundung durch spätere Zahlung</p>
+                        <p>Ausschüttend: Jährliche Nutzung des Freibetrags</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Füge Event-Listener für das Zielvermögen hinzu
+        document.getElementById('targetAmount').addEventListener('input', function() {
+            const value = parseFloat(this.value);
+            document.querySelector('#targetAmount').parentElement.querySelector('.value-display').textContent = 
+                formatCurrency(value);
+            window.targetAmount = value;
+            updateChart();
+        });
+
+        // Event-Listener für den Altersregler
+        document.getElementById('currentAge').addEventListener('input', function() {
+            const value = parseInt(this.value);
+            const displayElement = this.parentElement.querySelector('.value-display');
+            displayElement.textContent = value === 0 ? 'Geburt' : `${value} Jahre`;
+            updateChart();
+        });
+
+        // Anpassung der Regler-Eigenschaften im HTML
     </script>
 </body>
 </html> 
